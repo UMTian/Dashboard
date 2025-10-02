@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictive Maintenance & FMECA Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Predictive Maintenance & FMECA Dashboard</h1>
+                <p class="subtitle">Failure Mode Effects & Critical Analysis</p>
+            </div>
+            <div class="header-info">
+                <div class="header-badge">Level Dashboard • 50 FMECA</div>
+                <div class="header-badge">Real-time Monitoring</div>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="c-level">C-Level Dashboard</div>
+            <div class="tab" data-tab="technical">Technical Dashboard</div>
+        </div>
+        
+        <!-- C-Level Dashboard -->
+        <div id="c-level" class="dashboard active">
+            <h2 class="dashboard-title">C-Level Dashboard</h2>
+            
+            <div class="grid">
+                <div class="card" data-modal="oee-modal">
+                    <h3 class="card-title"><i class="fas fa-chart-line"></i> OEE Calculator</h3>
+                    <div class="metric">
+                        <span class="metric-label">Availability</span>
+                        <span class="metric-value">94.2%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-high" style="width: 94.2%"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Performance</span>
+                        <span class="metric-value">87.5%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-medium" style="width: 87.5%"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Quality</span>
+                        <span class="metric-value">96.8%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-high" style="width: 96.8%"></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="performance-modal">
+                    <h3 class="card-title"><i class="fas fa-tachometer-alt"></i> Large Performance</h3>
+                    <div class="metric">
+                        <span class="metric-label">Run Time Analysis</span>
+                        <span class="metric-value">92.4%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-high" style="width: 92.4%"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Machine Health</span>
+                        <span class="metric-value">82%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-medium" style="width: 82%"></div>
+                    </div>
+                    
+                    <div class="metric">
+                        <span class="metric-label">Production Rate</span>
+                        <span class="metric-value">88.7%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-medium" style="width: 88.7%"></div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="sensor-modal">
+                    <h3 class="card-title"><i class="fas fa-microchip"></i> Sensor Info & Error Inventory</h3>
+                    <div class="metric">
+                        <span class="metric-label">Active Sensors</span>
+                        <span class="metric-value">42/50</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Sensor Errors</span>
+                        <span class="metric-value">3</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Calibration Needed</span>
+                        <span class="metric-value">5</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Data Quality</span>
+                        <span class="metric-value">96.2%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card" data-modal="alert-modal">
+                    <h3 class="card-title"><i class="fas fa-bell"></i> Alert Engine</h3>
+                    <div class="alert-levels">
+                        <div class="alert-item">
+                            <div class="alert-level level-1">1</div>
+                            <div>
+                                <div class="metric-label">Base Alerts</div>
+                                <div class="metric-value">12 Active</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-level level-2">2</div>
+                            <div>
+                                <div class="metric-label">System Alerts</div>
+                                <div class="metric-value">5 Active</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-level level-3">3</div>
+                            <div>
+                                <div class="metric-label">IP Key Alerts</div>
+                                <div class="metric-value">2 Active</div>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-level level-4">4</div>
+                            <div>
+                                <div class="metric-label">Critical Alerts</div>
+                                <div class="metric-value">1 Active</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="risk-modal">
+                    <h3 class="card-title"><i class="fas fa-fire"></i> Risk Heat Map</h3>
+                    <div class="heat-map">
+                        <div class="heat-cell heat-1">Low</div>
+                        <div class="heat-cell heat-2">Med-Low</div>
+                        <div class="heat-cell heat-3">Medium</div>
+                        <div class="heat-cell heat-4">Med-High</div>
+                        <div class="heat-cell heat-5">High</div>
+                        <div class="heat-cell heat-1">Motor A</div>
+                        <div class="heat-cell heat-2">Pump B</div>
+                        <div class="heat-cell heat-4">Compressor</div>
+                        <div class="heat-cell heat-5">Dryer Rail</div>
+                        <div class="heat-cell heat-3">Conveyor</div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="fmeca-modal">
+                    <h3 class="card-title"><i class="fas fa-list-alt"></i> FMECA Analysis</h3>
+                    <div class="metric">
+                        <span class="metric-label">Total Failure Modes</span>
+                        <span class="metric-value">50</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">High Criticality</span>
+                        <span class="metric-value">12</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Medium Criticality</span>
+                        <span class="metric-value">25</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Low Criticality</span>
+                        <span class="metric-value">13</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card full-width" data-modal="critical-risks-modal">
+                    <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> Critical Risks Top 3</h3>
+                    <div class="risk-item">
+                        <div class="risk-title">Dryer Rail Bearing Failure</div>
+                        <div class="risk-details">
+                            <span>Failure probability: 78% in 30 days</span>
+                            <span>Impact: High</span>
+                        </div>
+                    </div>
+                    <div class="risk-item">
+                        <div class="risk-title">RFI Module Degradation</div>
+                        <div class="risk-details">
+                            <span>Failure probability: 65% in 45 days</span>
+                            <span>Impact: Medium</span>
+                        </div>
+                    </div>
+                    <div class="risk-item">
+                        <div class="risk-title">Compressor Valve Wear</div>
+                        <div class="risk-details">
+                            <span>Failure probability: 42% in 60 days</span>
+                            <span>Impact: Low</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Dashboard -->
+        <div id="technical" class="dashboard">
+            <h2 class="dashboard-title">Technical Dashboard</h2>
+            
+            <div class="grid">
+                <div class="card" data-modal="sensor-detail-modal">
+                    <h3 class="card-title"><i class="fas fa-tachometer-alt"></i> Real-time Sensor Data</h3>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <i class="fas fa-vibration fa-2x"></i>
+                            <div class="sensor-value">4.2 mm/s</div>
+                            <div class="sensor-label">Vibration</div>
+                        </div>
+                        <div class="sensor-item">
+                            <i class="fas fa-thermometer-half fa-2x"></i>
+                            <div class="sensor-value">72°C</div>
+                            <div class="sensor-label">Temperature</div>
+                        </div>
+                        <div class="sensor-item anomaly">
+                            <i class="fas fa-tachometer-alt fa-2x"></i>
+                            <div class="sensor-value">3.8 Bar</div>
+                            <div class="sensor-label">Pressure</div>
+                        </div>
+                        <div class="sensor-item">
+                            <i class="fas fa-tint fa-2x"></i>
+                            <div class="sensor-value">45%</div>
+                            <div class="sensor-label">Humidity</div>
+                        </div>
+                        <div class="sensor-item">
+                            <i class="fas fa-bolt fa-2x"></i>
+                            <div class="sensor-value">24.5 A</div>
+                            <div class="sensor-label">Current</div>
+                        </div>
+                        <div class="sensor-item">
+                            <i class="fas fa-car-battery fa-2x"></i>
+                            <div class="sensor-value">415 V</div>
+                            <div class="sensor-label">Voltage</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="failure-timeline-modal">
+                    <h3 class="card-title"><i class="fas fa-chart-area"></i> Failure Probability Timeline</h3>
+                    <div class="chart-container">
+                        <canvas id="failureTimeline"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="anomaly-modal">
+                    <h3 class="card-title"><i class="fas fa-project-diagram"></i> Anomaly Detection</h3>
+                    <div class="metric">
+                        <span class="metric-label">Current Status</span>
+                        <span class="metric-value">2 Anomalies</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Detection Confidence</span>
+                        <span class="metric-value">99.2%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress progress-high" style="width: 99.2%"></div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Last Anomaly</span>
+                        <span class="metric-value">Pressure Sensor</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Time Since Last</span>
+                        <span class="metric-value">3.2 hours</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card" data-modal="maintenance-modal">
+                    <h3 class="card-title"><i class="fas fa-tools"></i> Maintenance & Recommendations</h3>
+                    <div class="maintenance-item">
+                        <div class="maintenance-info">
+                            <h4>Dryer Rail Bearing Replacement</h4>
+                            <div class="maintenance-date">Scheduled: Oct 15, 2025</div>
+                        </div>
+                        <div class="status status-urgent">Urgent</div>
+                    </div>
+                    <div class="maintenance-item">
+                        <div class="maintenance-info">
+                            <h4>Lubrication System Service</h4>
+                            <div class="maintenance-date">Scheduled: Oct 22, 2025</div>
+                        </div>
+                        <div class="status status-pending">Pending</div>
+                    </div>
+                    <div class="maintenance-item">
+                        <div class="maintenance-info">
+                            <h4>Vibration Analysis Calibration</h4>
+                            <div class="maintenance-date">Completed: Sep 28, 2025</div>
+                        </div>
+                        <div class="status status-completed">Completed</div>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="trend-modal">
+                    <h3 class="card-title"><i class="fas fa-chart-line"></i> Trend Analysis</h3>
+                    <div class="chart-container">
+                        <canvas id="trendAnalysis"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card" data-modal="root-cause-modal">
+                    <h3 class="card-title"><i class="fas fa-search"></i> Root Cause Explanation</h3>
+                    <div class="metric">
+                        <span class="metric-label">Primary Issue</span>
+                        <span class="metric-value">Bearing Wear</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Contributing Factors</span>
+                        <span class="metric-value">Inadequate Lubrication</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Impact</span>
+                        <span class="metric-value">Increased Vibration</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Recommended Action</span>
+                        <span class="metric-value">Replace Bearing</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Preventive Measure</span>
+                        <span class="metric-value">Improve Lubrication Schedule</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="oee-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-chart-line"></i> OEE Calculator - Detailed Analysis</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">OEE Components</h3>
+                    <div class="modal-grid">
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">94.2%</div>
+                            <div class="modal-metric-label">Availability</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">87.5%</div>
+                            <div class="modal-metric-label">Performance</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">96.8%</div>
+                            <div class="modal-metric-label">Quality</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">79.8%</div>
+                            <div class="modal-metric-label">Overall OEE</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Availability Breakdown</h3>
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Machine</th>
+                                <th>Planned Runtime</th>
+                                <th>Actual Runtime</th>
+                                <th>Availability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Assembly Line A</td>
+                                <td>720 hrs</td>
+                                <td>690 hrs</td>
+                                <td>95.8%</td>
+                            </tr>
+                            <tr>
+                                <td>Packaging Unit B</td>
+                                <td>720 hrs</td>
+                                <td>675 hrs</td>
+                                <td>93.7%</td>
+                            </tr>
+                            <tr>
+                                <td>Testing Station C</td>
+                                <td>720 hrs</td>
+                                <td>710 hrs</td>
+                                <td>98.6%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Performance Metrics</h3>
+                    <div class="modal-chart">
+                        <canvas id="oeePerformanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Quality Metrics</h3>
+                    <div class="modal-chart">
+                        <canvas id="oeeQualityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="performance-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-tachometer-alt"></i> Large Performance - Detailed Analysis</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Run Time Analysis</h3>
+                    <div class="modal-grid">
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">92.4%</div>
+                            <div class="modal-metric-label">Overall Run Time</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">96.1%</div>
+                            <div class="modal-metric-label">Peak Performance</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">88.7%</div>
+                            <div class="modal-metric-label">Average Performance</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">2.3%</div>
+                            <div class="modal-metric-label">Downtime</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Machine Health Status</h3>
+                    <div class="modal-chart">
+                        <canvas id="machineHealthChart"></canvas>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Performance Trends</h3>
+                    <div class="modal-chart">
+                        <canvas id="performanceTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fas fa-bell"></i> Alert Engine - Incident Reporting</h2>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3 class="modal-section-title">Alert Levels</h3>
+                    <div class="modal-grid">
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">12</div>
+                            <div class="modal-metric-label">Level 1 - Base</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">5</div>
+                            <div class="modal-metric-label">Level 2 - System</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">2</div>
+                            <div class="modal-metric-label">Level 3 - IP Key</div>
+                        </div>
+                        <div class="modal-metric">
+                            <div class="modal-metric-value">1</div>
+                            <div class="modal-metric-label">Level 4 - Critical</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-section full-width">
+                    <h3 class="modal-section-title">Active Alerts</h3>
+                    <table class="modal-table">
+                        <thead>
+                            <tr>
+                                <th>Alert ID</th>
+                                <th>Level</th>
+                                <th>Description</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ALT-0042</td>
+                                <td><span class="status status-urgent">Critical</span></td>
+                                <td>Dryer Rail Bearing Temperature Critical</td>
+                                <td>10:42 AM</td>
+                                <td>Active</td>
+                            </tr>
+                            <tr>
+                                <td>ALT-0038</td>
+                                <td><span class="status status-pending">IP Key</span></td>
+                                <td>RFI Module Performance Degradation</td>
+                                <td>09:15 AM</td>
+                                <td>Active</td>
+                            </tr>
+                            <tr>
+                                <td>ALT-0035</td>
+                                <td><span class="status status-pending">IP Key</span></td>
+                                <td>Compressor Valve Vibration Alert</td>
+                                <td>08:30 AM</td>
+                                <td>Active</td>
+                            </tr>
+                            <tr>
+                                <td>ALT-0029</td>
+                                <td><span class="status status-pending">System</span></td>
+                                <td>Lubrication System Pressure Drop</td>
+                                <td>07:55 AM</td>
+                                <td>Active</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional modals would be added here for other components -->
+
+    <script src="script.js"></script>
+</body>
+</html>

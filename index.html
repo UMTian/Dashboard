@@ -372,197 +372,461 @@
             </div>
             
             <!-- Technical Dashboard -->
+            <!-- Technical Dashboard -->
             <div id="technical" class="technical-dashboard">
                 <div class="technical-header">
                     <div>
-                        <h1 class="technical-title">Predictive Maintenance & FMECA Dashboard</h1>
-                        <p class="subtitle">Failure Mode Effects & Critical Analysis</p>
+                        <h1 class="technical-title">Advanced Predictive Maintenance Dashboard</h1>
+                        <p class="subtitle">Real-time Sensor Analytics & Failure Prediction</p>
                     </div>
                     <div class="technical-header-info">
-                        <div class="header-badge">Level Dashboard • 50 FMECA</div>
-                        <div class="header-badge">Real-time Monitoring</div>
+                        <div class="header-badge">Live Monitoring</div>
+                        <div class="header-badge">50 Active Sensors</div>
+                        <div class="header-badge">AI Analytics</div>
                     </div>
                 </div>
-                
+
+                <!-- Row 1: Real-time Sensor Data -->
                 <div class="technical-grid">
-                    <div class="technical-card" data-modal="sensor-detail-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-tachometer-alt"></i> Real-time Sensor Data</h3>
-                        <div class="sensor-grid">
-                            <div class="sensor-item">
-                                <i class="fas fa-vibration fa-2x"></i>
-                                <div class="sensor-value">4.2 mm/s</div>
-                                <div class="sensor-label">Vibration</div>
+                    <!-- Vibration Spectrum -->
+                    <div class="technical-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-vibration"></i> Real-time Vibration Analysis</h3>
+                            <div class="machine-tabs">
+                                <button class="machine-tab active" data-machine="yankee">Yankee Dryer</button>
+                                <button class="machine-tab" data-machine="refiners">Refiners</button>
+                                <button class="machine-tab" data-machine="press">Press Rolls</button>
                             </div>
-                            <div class="sensor-item">
-                                <i class="fas fa-thermometer-half fa-2x"></i>
-                                <div class="sensor-value">72°C</div>
-                                <div class="sensor-label">Temperature</div>
+                        </div>
+                        <div class="vibration-analysis">
+                            <div class="vibration-chart">
+                                <div class="chart-header">
+                                    <h4>FFT Spectrum Analysis</h4>
+                                    <div class="threshold-indicators">
+                                        <span class="threshold normal">Normal: < 2.0g</span>
+                                        <span class="threshold caution">Caution: 2.0-3.0g</span>
+                                        <span class="threshold alarm">Alarm: > 3.0g</span>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="fftChart"></canvas>
+                                </div>
                             </div>
-                            <div class="sensor-item anomaly">
-                                <i class="fas fa-tachometer-alt fa-2x"></i>
-                                <div class="sensor-value">3.8 Bar</div>
-                                <div class="sensor-label">Pressure</div>
-                            </div>
-                            <div class="sensor-item">
-                                <i class="fas fa-tint fa-2x"></i>
-                                <div class="sensor-value">45%</div>
-                                <div class="sensor-label">Humidity</div>
-                            </div>
-                            <div class="sensor-item">
-                                <i class="fas fa-bolt fa-2x"></i>
-                                <div class="sensor-value">24.5 A</div>
-                                <div class="sensor-label">Current</div>
-                            </div>
-                            <div class="sensor-item">
-                                <i class="fas fa-car-battery fa-2x"></i>
-                                <div class="sensor-value">415 V</div>
-                                <div class="sensor-label">Voltage</div>
+                            <div class="vibration-chart">
+                                <div class="chart-header">
+                                    <h4>Time-Domain Vibration</h4>
+                                    <div class="sensor-selector">
+                                        <select id="vibrationSensorSelect">
+                                            <option value="yankee_r">YANKI_R</option>
+                                            <option value="yankee_l">YANKI_L</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="chart-container">
+                                    <canvas id="timeDomainChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="technical-card" data-modal="failure-timeline-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-chart-area"></i> Failure Probability Timeline</h3>
+                </div>
+
+                <!-- Row 2: Temperature & Current Analysis -->
+                <div class="technical-grid">
+                    <!-- Temperature Curves -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-thermometer-half"></i> Temperature Monitoring</h3>
+                            <div class="time-range">
+                                <select id="tempTimeRange">
+                                    <option value="1h">Last 1 Hour</option>
+                                    <option value="4h">Last 4 Hours</option>
+                                    <option value="24h">Last 24 Hours</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="chart-container">
-                            <canvas id="failureTimeline"></canvas>
+                            <canvas id="temperatureChart"></canvas>
+                        </div>
+                        <div class="temperature-heatmap">
+                            <div class="heatmap-title">Machine Section Temperature Intensity</div>
+                            <div class="heatmap-grid">
+                                <div class="heatmap-cell low" title="Headbox: 45°C">Headbox</div>
+                                <div class="heatmap-cell medium" title="Wire Section: 58°C">Wire Section</div>
+                                <div class="heatmap-cell high" title="Press Section: 72°C">Press Section</div>
+                                <div class="heatmap-cell critical" title="Dryer Section: 85°C">Dryer Section</div>
+                                <div class="heatmap-cell medium" title="Calender: 62°C">Calender</div>
+                                <div class="heatmap-cell low" title="Reel: 48°C">Reel</div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="technical-card" data-modal="anomaly-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-project-diagram"></i> Anomaly Detection</h3>
-                        <div class="metric">
-                            <span class="metric-label">Current Status</span>
-                            <span class="metric-value">2 Anomalies</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Detection Confidence</span>
-                            <span class="metric-value">99.2%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress progress-high" style="width: 99.2%"></div>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Last Anomaly</span>
-                            <span class="metric-value">Pressure Sensor</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Time Since Last</span>
-                            <span class="metric-value">3.2 hours</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="technical-grid">
-                    <div class="technical-card" data-modal="maintenance-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-tools"></i> Maintenance & Recommendations</h3>
-                        <div class="maintenance-item">
-                            <div class="maintenance-info">
-                                <h4>Dryer Rail Bearing Replacement</h4>
-                                <div class="maintenance-date">Scheduled: Oct 15, 2025</div>
+
+                    <!-- Current Load -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Current Load Analysis</h3>
+                            <div class="load-status">
+                                <span class="status-indicator normal">72% Load</span>
                             </div>
-                            <div class="status status-urgent">Urgent</div>
                         </div>
-                        <div class="maintenance-item">
-                            <div class="maintenance-info">
-                                <h4>Lubrication System Service</h4>
-                                <div class="maintenance-date">Scheduled: Oct 22, 2025</div>
-                            </div>
-                            <div class="status status-pending">Pending</div>
+                        <div class="gauge-container">
+                            <canvas id="currentGauge"></canvas>
                         </div>
-                        <div class="maintenance-item">
-                            <div class="maintenance-info">
-                                <h4>Vibration Analysis Calibration</h4>
-                                <div class="maintenance-date">Completed: Sep 28, 2025</div>
-                            </div>
-                            <div class="status status-completed">Completed</div>
-                        </div>
-                    </div>
-                    
-                    <div class="technical-card" data-modal="trend-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-chart-line"></i> Trend Analysis</h3>
                         <div class="chart-container">
-                            <canvas id="trendAnalysis"></canvas>
+                            <canvas id="currentTrendChart"></canvas>
                         </div>
-                    </div>
-                    
-                    <div class="technical-card" data-modal="root-cause-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-search"></i> Root Cause Explanation</h3>
-                        <div class="metric">
-                            <span class="metric-label">Primary Issue</span>
-                            <span class="metric-value">Bearing Wear</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Contributing Factors</span>
-                            <span class="metric-value">Inadequate Lubrication</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Impact</span>
-                            <span class="metric-value">Increased Vibration</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Recommended Action</span>
-                            <span class="metric-value">Replace Bearing</span>
-                        </div>
-                        <div class="metric">
-                            <span class="metric-label">Preventive Measure</span>
-                            <span class="metric-value">Improve Lubrication Schedule</span>
+                        <div class="load-alerts">
+                            <div class="load-alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Spike detected: +25% at 14:30</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Sensor Cards Section -->
+
+                <!-- Row 3: Anomaly Detection & Failure Probability -->
                 <div class="technical-grid">
-                    <div class="technical-card full-width" data-modal="sensors-modal">
-                        <h3 class="technical-card-title"><i class="fas fa-microchip"></i> Sensor Data Analysis</h3>
-                        
-                        <!-- YANKI_R Sensor Card -->
-                        <div class="sensor-card" data-sensor="YANKI_R">
-                            <div class="sensor-header">
-                                <div class="sensor-name">YANKI_R</div>
-                                <div class="sensor-status status-active">Active</div>
+                    <!-- Anomaly Detection -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Anomaly Detection Alerts</h3>
+                            <div class="alert-stats">
+                                <span class="alert-count critical">3</span>
+                                <span class="alert-count warning">5</span>
                             </div>
-                            <div class="sensor-details">
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.21</div>
-                                    <div class="sensor-detail-label">Accel X (g)</div>
+                        </div>
+                        <div class="anomaly-feed">
+                            <div class="anomaly-item critical">
+                                <div class="anomaly-header">
+                                    <span class="anomaly-type">Critical</span>
+                                    <span class="anomaly-time">2 min ago</span>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.49</div>
-                                    <div class="sensor-detail-label">Accel Y (g)</div>
+                                <div class="anomaly-content">
+                                    <div class="anomaly-title">High Vibration on Press Roll</div>
+                                    <div class="anomaly-details">3.5g > 2.0g limit</div>
+                                    <button class="btn btn-sm drill-down">Drill Down</button>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.22</div>
-                                    <div class="sensor-detail-label">Accel Z (g)</div>
+                            </div>
+                            <div class="anomaly-item warning">
+                                <div class="anomaly-header">
+                                    <span class="anomaly-type">Warning</span>
+                                    <span class="anomaly-time">15 min ago</span>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">50.1</div>
-                                    <div class="sensor-detail-label">Temp (°C)</div>
+                                <div class="anomaly-content">
+                                    <div class="anomaly-title">Temperature Anomaly - Dryer</div>
+                                    <div class="anomaly-details">85°C > 80°C baseline</div>
+                                    <button class="btn btn-sm drill-down">Drill Down</button>
+                                </div>
+                            </div>
+                            <div class="anomaly-item info">
+                                <div class="anomaly-header">
+                                    <span class="anomaly-type">Info</span>
+                                    <span class="anomaly-time">30 min ago</span>
+                                </div>
+                                <div class="anomaly-content">
+                                    <div class="anomaly-title">Current Fluctuation</div>
+                                    <div class="anomaly-details">±15% variance detected</div>
+                                    <button class="btn btn-sm drill-down">Drill Down</button>
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- YANKI_L Sensor Card -->
-                        <div class="sensor-card" data-sensor="YANKI_L">
-                            <div class="sensor-header">
-                                <div class="sensor-name">YANKI_L</div>
-                                <div class="sensor-status status-warning">Warning</div>
+                        <div class="anomaly-scatter">
+                            <div class="chart-container">
+                                <canvas id="anomalyScatterChart"></canvas>
                             </div>
-                            <div class="sensor-details">
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.33</div>
-                                    <div class="sensor-detail-label">Accel X (g)</div>
+                        </div>
+                    </div>
+
+                    <!-- Failure Probability Timeline -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Failure Probability Timeline</h3>
+                            <select id="componentSelect">
+                                <option value="dryer_bearing">Dryer Roll Bearing</option>
+                                <option value="press_roll">Press Section Roll</option>
+                                <option value="yankee_cylinder">Yankee Cylinder</option>
+                            </select>
+                        </div>
+                        <div class="rul-display">
+                            <div class="rul-metric">
+                                <div class="rul-value">142</div>
+                                <div class="rul-label">Days RUL</div>
+                                <div class="health-index">
+                                    <span class="index-value">78</span>
+                                    <span class="index-label">Health Index</span>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.56</div>
-                                    <div class="sensor-detail-label">Accel Y (g)</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="failureProbabilityChart"></canvas>
+                        </div>
+                        <div class="timeline-gantt">
+                            <div class="gantt-bar">
+                                <div class="gantt-label">Current</div>
+                                <div class="gantt-track">
+                                    <div class="gantt-progress healthy" style="width: 70%"></div>
+                                    <div class="gantt-marker current" style="left: 70%"></div>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">1.35</div>
-                                    <div class="sensor-detail-label">Accel Z (g)</div>
+                            </div>
+                            <div class="gantt-bar">
+                                <div class="gantt-label">Expected Failure</div>
+                                <div class="gantt-track">
+                                    <div class="gantt-progress warning" style="width: 90%"></div>
+                                    <div class="gantt-date">Dec 15, 2024</div>
                                 </div>
-                                <div class="sensor-detail">
-                                    <div class="sensor-detail-value">58.1</div>
-                                    <div class="sensor-detail-label">Temp (°C)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 4: FMECA & Maintenance -->
+                <div class="technical-grid">
+                    <!-- FMECA Details -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-cogs"></i> FMECA Component Analysis</h3>
+                            <button class="btn btn-sm btn-primary" id="exportFmeca">Export</button>
+                        </div>
+                        <div class="fmeca-matrix">
+                            <table class="fmeca-table">
+                                <thead>
+                                    <tr>
+                                        <th>Component</th>
+                                        <th>Failure Mode</th>
+                                        <th>Effect</th>
+                                        <th>RPN</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="critical-fmeca">
+                                        <td>Dryer Roll Bearing</td>
+                                        <td>Bearing wear</td>
+                                        <td>Machine shutdown</td>
+                                        <td><span class="rpn-score">225</span></td>
+                                    </tr>
+                                    <tr class="high-fmeca">
+                                        <td>Press Section Roll</td>
+                                        <td>Roll deflection</td>
+                                        <td>Quality issues</td>
+                                        <td><span class="rpn-score">144</span></td>
+                                    </tr>
+                                    <tr class="medium-fmeca">
+                                        <td>Yankee Cylinder</td>
+                                        <td>Surface wear</td>
+                                        <td>Reduced efficiency</td>
+                                        <td><span class="rpn-score">85</span></td>
+                                    </tr>
+                                    <tr class="low-fmeca">
+                                        <td>Wire Table Guide</td>
+                                        <td>Guide wear</td>
+                                        <td>Minor alignment issues</td>
+                                        <td><span class="rpn-score">45</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="fmeca-details-panel" id="fmecaDetails">
+                            <div class="details-header">Component Details</div>
+                            <div class="details-content">
+                                <p>Select a component to view detailed failure analysis</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maintenance & Recommendations -->
+                    <div class="technical-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tools"></i> Maintenance & Recommendations</h3>
+                            <div class="maintenance-badges">
+                                <span class="badge urgent">3 Urgent</span>
+                                <span class="badge scheduled">5 Scheduled</span>
+                            </div>
+                        </div>
+                        <div class="maintenance-tasks">
+                            <div class="task-item urgent">
+                                <div class="task-icon">🔧</div>
+                                <div class="task-content">
+                                    <div class="task-title">Replace Dryer Roll Bearing</div>
+                                    <div class="task-priority">Immediate Action Required</div>
+                                    <div class="task-decision">
+                                        <span class="decision-path">Inspect → Replace → Test</span>
+                                    </div>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="btn btn-sm btn-primary">Schedule</button>
+                                </div>
+                            </div>
+                            <div class="task-item warning">
+                                <div class="task-icon">🛠️</div>
+                                <div class="task-content">
+                                    <div class="task-title">Lubrication System Service</div>
+                                    <div class="task-priority">Scheduled for Next Shutdown</div>
+                                    <div class="task-decision">
+                                        <span class="decision-path">Check levels → Refill → Verify</span>
+                                    </div>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="btn btn-sm">Schedule</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="spare-parts">
+                            <div class="parts-header">
+                                <h4>Spare Parts Inventory</h4>
+                                <span class="stock-status">2 Critical items low</span>
+                            </div>
+                            <div class="inventory-charts">
+                                <div class="inventory-chart">
+                                    <canvas id="inventoryChart" height="120"></canvas>
+                                </div>
+                                <div class="stock-alerts">
+                                    <div class="stock-alert critical">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span>Bearing Assembly: 2 left (Min: 5)</span>
+                                    </div>
+                                    <div class="stock-alert warning">
+                                        <i class="fas fa-clock"></i>
+                                        <span>Drive Belt: 3 left (Reorder advised)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 5: Trend Analysis -->
+                <div class="technical-grid">
+                    <div class="technical-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-area"></i> Trend Analysis & Correlation</h3>
+                            <div class="correlation-controls">
+                                <select id="correlationType">
+                                    <option value="vibration-temp">Vibration vs Temperature</option>
+                                    <option value="speed-failure">Machine Speed vs Failure</option>
+                                    <option value="load-vibration">Load vs Vibration</option>
+                                </select>
+                                <select id="timeWindow">
+                                    <option value="7d">Last 7 Days</option>
+                                    <option value="30d">Last 30 Days</option>
+                                    <option value="90d">Last 90 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="trend-analysis-grid">
+                            <div class="trend-chart">
+                                <div class="chart-container">
+                                    <canvas id="multiTrendChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="correlation-chart">
+                                <div class="chart-container">
+                                    <canvas id="correlationHeatmap"></canvas>
+                                </div>
+                                <div class="threshold-regions">
+                                    <div class="region critical">
+                                        <span class="region-color"></span>
+                                        <span>High Failure Probability</span>
+                                    </div>
+                                    <div class="region warning">
+                                        <span class="region-color"></span>
+                                        <span>Moderate Risk</span>
+                                    </div>
+                                    <div class="region normal">
+                                        <span class="region-color"></span>
+                                        <span>Normal Operation</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 6: Root Cause Explorer -->
+                <div class="technical-grid">
+                    <div class="technical-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-search"></i> Root Cause Explorer</h3>
+                            <div class="breadcrumb" id="explorerBreadcrumb">
+                                <span class="breadcrumb-item active">Machine Level</span>
+                            </div>
+                        </div>
+                        <div class="root-cause-explorer">
+                            <div class="explorer-tree">
+                                <div class="tree-level machine-level">
+                                    <div class="tree-node active" data-target="yankee">
+                                        <i class="fas fa-industry"></i>
+                                        <span>Yankee Dryer</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="tree-node" data-target="refiners">
+                                        <i class="fas fa-cogs"></i>
+                                        <span>Refiners</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="tree-node" data-target="press">
+                                        <i class="fas fa-compress"></i>
+                                        <span>Press Section</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="tree-level subsystem-level hidden">
+                                    <div class="tree-node" data-target="yankee_bearing">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Bearing Assembly</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="tree-node" data-target="yankee_cylinder">
+                                        <i class="fas fa-circle"></i>
+                                        <span>Cylinder Surface</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="tree-level component-level hidden">
+                                    <div class="tree-node" data-target="vibration_sensor">
+                                        <i class="fas fa-microchip"></i>
+                                        <span>Vibration Sensor</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                    <div class="tree-node" data-target="temp_sensor">
+                                        <i class="fas fa-thermometer-half"></i>
+                                        <span>Temperature Sensor</span>
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="explorer-dashboard">
+                                <div class="dashboard-placeholder">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Select a component from the tree to view detailed sensor signals and analysis</p>
+                                </div>
+                                <div class="sensor-dashboard hidden">
+                                    <div class="sensor-header">
+                                        <h4 id="sensorTitle">Sensor Analysis</h4>
+                                        <div class="sensor-meta">
+                                            <span class="sensor-id">ID: YANKI_R</span>
+                                            <span class="sensor-status normal">Normal</span>
+                                        </div>
+                                    </div>
+                                    <div class="sensor-charts">
+                                        <div class="chart-container">
+                                            <canvas id="sensorDetailChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="failure-events">
+                                        <h5>Failure Events Overlay</h5>
+                                        <div class="events-list">
+                                            <div class="event-item">
+                                                <span class="event-date">2024-01-15</span>
+                                                <span class="event-type">Bearing Replacement</span>
+                                            </div>
+                                            <div class="event-item">
+                                                <span class="event-date">2024-03-22</span>
+                                                <span class="event-type">Vibration Spike</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

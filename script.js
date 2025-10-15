@@ -1,452 +1,962 @@
-// Dashboard switching functionality
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetTab = this.getAttribute('data-tab');
-        
-        // Update active state in sidebar
-        document.querySelectorAll('.nav-links li').forEach(li => {
-            li.classList.remove('active');
-        });
-        this.parentElement.classList.add('active');
-        
-        // Show/hide dashboards
-        document.querySelectorAll('.dashboard-content, .technical-dashboard').forEach(dashboard => {
-            dashboard.classList.remove('active');
-        });
-        
-        if (targetTab === 'c-level') {
-            document.getElementById('c-level').classList.add('active');
-        } else if (targetTab === 'technical') {
-            document.getElementById('technical').classList.add('active');
-            // Initialize technical charts when dashboard is shown
-            setTimeout(initializeTechnicalCharts, 100);
-        }
-    });
+// Dashboard initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all charts and functionality
+    initializeDashboard();
 });
 
-// Update date and time
-function updateDateTime() {
-    const now = new Date();
-    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+function initializeDashboard() {
+    // Tab switching functionality
+    setupTabSwitching();
     
-    // Set last updated to current time
-    const timeOptions = { hour: '2-digit', minute: '2-digit' };
-    document.getElementById('last-updated').textContent = now.toLocaleTimeString('en-US', timeOptions);
+    // Initialize all charts
+    initializeCharts();
+    
+    // Setup interactive elements
+    setupInteractivity();
+    
+    // Load initial data
+    loadOverviewData();
 }
 
-updateDateTime();
-setInterval(updateDateTime, 60000); // Update every minute
-
-// Machine Health Index Chart
-const healthCtx = document.getElementById('healthChart').getContext('2d');
-const healthChart = new Chart(healthCtx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-        datasets: [{
-            label: 'Machine Health Index',
-            data: [88, 85, 87, 90, 89, 91, 92],
-            borderColor: '#2ecc71',
-            backgroundColor: 'rgba(46, 204, 113, 0.1)',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                min: 80,
-                max: 100,
-                ticks: {
-                    callback: function(value) {
-                        return value + '%';
-                    }
-                }
-            }
-        }
-    }
-});
-
-// Downtime Impact Chart
-const downtimeCtx = document.getElementById('downtimeChart').getContext('2d');
-const downtimeChart = new Chart(downtimeCtx, {
-    type: 'line',
-    data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [
-            {
-                label: 'Lost Production Hours',
-                data: [24, 18, 22, 15, 20, 18.5],
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4
-            },
-            {
-                label: 'Predictive Savings',
-                data: [8, 10, 12, 14, 16, 15],
-                borderColor: '#2ecc71',
-                backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Hours'
-                }
-            }
-        }
-    }
-});
-
-// Cost Impact Chart
-const costCtx = document.getElementById('costChart').getContext('2d');
-const costChart = new Chart(costCtx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Maintenance', 'Downtime', 'Repairs', 'Spare Parts', 'Energy Loss'],
-        datasets: [{
-            data: [45200, 52500, 18000, 32400, 17300],
-            backgroundColor: [
-                '#3498db',
-                '#e74c3c',
-                '#f39c12',
-                '#9b59b6',
-                '#1abc9c'
-            ],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const label = context.label || '';
-                        const value = context.raw || 0;
-                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                        const percentage = Math.round((value / total) * 100);
-                        return `${label}: $${value.toLocaleString()} (${percentage}%)`;
-                    }
-                }
-            }
-        }
-    }
-});
-
-// Add interactivity to heatmap items
-document.querySelectorAll('.heatmap-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const componentName = this.getAttribute('title');
-        alert(`Component: ${componentName}\nCriticality: ${this.classList.contains('criticality-A') ? 'A - Immediate stop risk' : 
-            this.classList.contains('criticality-B') ? 'B - Throughput/quality risk' : 'C - Efficiency risk'}`);
-    });
-});
-
-// Simulate real-time updates
-function simulateUpdates() {
-    // Randomly update OEE value
-    const oeeValue = document.querySelector('.stats-cards .card:first-child .card-value');
-    const currentOEE = parseFloat(oeeValue.textContent);
-    const newOEE = (currentOEE + (Math.random() * 0.4 - 0.2)).toFixed(1);
-    oeeValue.textContent = newOEE + '%';
+// Tab Switching
+function setupTabSwitching() {
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabContents = document.querySelectorAll('.tab-content');
     
-    // Update last updated time
-    updateDateTime();
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Update active nav item
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show target tab content
+            tabContents.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.id === targetTab) {
+                    tab.classList.add('active');
+                    
+                    // Load data for the active tab
+                    loadTabData(targetTab);
+                }
+            });
+        });
+    });
 }
 
-// Update every 30 seconds
-setInterval(simulateUpdates, 30000);
+// Load data for specific tabs
+function loadTabData(tabId) {
+    switch(tabId) {
+        case 'overview':
+            loadOverviewData();
+            break;
+        case 'historical':
+            loadHistoricalData();
+            break;
+        case 'forecasting':
+            loadForecastingData();
+            break;
+        case 'inventory':
+            loadInventoryData();
+            break;
+        case 'warehouses':
+            loadWarehouseData();
+            break;
+        case 'alerts':
+            loadAlertsData();
+            break;
+        case 'scenario':
+            loadScenarioData();
+            break;
+        case 'reports':
+            loadReportsData();
+            break;
+    }
+}
 
-// ===== TECHNICAL DASHBOARD CHARTS =====
+// Chart Initialization
+function initializeCharts() {
+    // All charts will be created when their respective tabs are loaded
+}
 
-let technicalCharts = {};
+// Interactive Elements
+function setupInteractivity() {
+    // Model selector buttons
+    const modelButtons = document.querySelectorAll('.model-btn');
+    modelButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            modelButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            updateForecastModel(this.getAttribute('data-model'));
+        });
+    });
+    
+    // Forecast horizon slider
+    const horizonSlider = document.getElementById('forecastHorizon');
+    const horizonValue = document.getElementById('horizonValue');
+    if (horizonSlider) {
+        horizonSlider.addEventListener('input', function() {
+            horizonValue.textContent = this.value;
+            updateForecastHorizon(parseInt(this.value));
+        });
+    }
+    
+    // Scenario sliders
+    setupScenarioSliders();
+    
+    // Alert filters
+    setupAlertFilters();
+    
+    // Report filters
+    setupReportFilters();
+    
+    // Export buttons
+    setupExportButtons();
+}
 
-function initializeTechnicalCharts() {
-    // FFT Spectrum Chart
-    const fftCtx = document.getElementById('fftChart').getContext('2d');
-    technicalCharts.fftChart = new Chart(fftCtx, {
-        type: 'bar',
+// Data Loading Functions
+function loadOverviewData() {
+    createSalesDemandChart();
+    createStockStatusChart();
+    // Map visualization would be implemented here
+}
+
+function loadHistoricalData() {
+    createDemandTrendChart();
+    createSeasonalityChart();
+    createVariabilityChart();
+    createLeadTimeChart();
+}
+
+function loadForecastingData() {
+    createForecastChart();
+    createAccuracyChart();
+}
+
+function loadInventoryData() {
+    createInventorySafetyChart();
+    createStockHealthChart();
+}
+
+function loadWarehouseData() {
+    createWarehouseHeatmap();
+    createFlowChart();
+    // Geographic map would be implemented here
+}
+
+function loadAlertsData() {
+    createPOChart();
+    createBreachChart();
+    populateAlertTable();
+}
+
+function loadScenarioData() {
+    createScenarioChart();
+    createSensitivityChart();
+}
+
+function loadReportsData() {
+    createPreviewCharts();
+}
+
+// Chart Creation Functions
+function createSalesDemandChart() {
+    const ctx = document.getElementById('salesDemandChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Generate sample data
+    const salesData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    const demandData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    const forecastData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    
+    new Chart(ctx, {
+        type: 'line',
         data: {
-            labels: ['10Hz', '25Hz', '50Hz', '100Hz', '200Hz', '500Hz', '1kHz', '2kHz'],
-            datasets: [{
-                label: 'Vibration Amplitude',
-                data: [0.8, 1.2, 1.8, 2.1, 1.5, 0.9, 0.7, 0.5],
-                backgroundColor: [
-                    '#2ecc71', '#2ecc71', '#f39c12', '#e74c3c',
-                    '#f39c12', '#2ecc71', '#2ecc71', '#2ecc71'
-                ],
-                borderColor: '#34495e',
-                borderWidth: 1
-            }]
+            labels: months,
+            datasets: [
+                {
+                    label: 'Sales',
+                    data: salesData,
+                    borderColor: '#1E88E5',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Demand',
+                    data: demandData,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Forecast',
+                    data: forecastData,
+                    borderColor: '#FF9800',
+                    backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    fill: false
+                }
+            ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Amplitude (g)'
+                        text: 'Units'
                     }
+                }
+            }
+        }
+    });
+}
+
+function createStockStatusChart() {
+    const ctx = document.getElementById('stockStatusChart').getContext('2d');
+    const categories = ['Electronics', 'Apparel', 'Home Goods', 'Automotive', 'Toys'];
+    
+    const overstockData = Array.from({length: 5}, () => Math.floor(Math.random() * 100));
+    const understockData = Array.from({length: 5}, () => Math.floor(Math.random() * 50));
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [
+                {
+                    label: 'Overstock',
+                    data: overstockData,
+                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
                 },
+                {
+                    label: 'Understock',
+                    data: understockData,
+                    backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createDemandTrendChart() {
+    const ctx = document.getElementById('demandTrendChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const demandData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Monthly Demand',
+                    data: demandData,
+                    borderColor: '#1E88E5',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createSeasonalityChart() {
+    const ctx = document.getElementById('seasonalityChart').getContext('2d');
+    const years = ['2020', '2021', '2022', '2023'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Generate sample heatmap data
+    const data = {
+        labels: months,
+        datasets: years.map((year, i) => ({
+            label: year,
+            data: Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500),
+            backgroundColor: `rgba(30, 136, 229, ${0.3 + i * 0.2})`
+        }))
+    };
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
                 x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createVariabilityChart() {
+    const ctx = document.getElementById('variabilityChart').getContext('2d');
+    const categories = ['Electronics', 'Apparel', 'Home Goods', 'Automotive', 'Toys'];
+    
+    // Generate sample boxplot data (simplified)
+    const datasets = categories.map(category => {
+        const values = Array.from({length: 20}, () => Math.floor(Math.random() * 100) + 50);
+        return {
+            label: category,
+            data: values,
+            backgroundColor: 'rgba(30, 136, 229, 0.5)',
+            borderColor: '#1E88E5',
+            borderWidth: 1
+        };
+    });
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [{
+                label: 'Demand Variability',
+                data: datasets.map(d => {
+                    const values = d.data;
+                    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+                    return avg;
+                }),
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Average Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createLeadTimeChart() {
+    const ctx = document.getElementById('leadTimeChart').getContext('2d');
+    
+    // Generate sample lead time data
+    const leadTimes = Array.from({length: 100}, () => Math.floor(Math.random() * 30) + 5);
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Array.from({length: 10}, (_, i) => `${i*3}-${(i+1)*3} days`),
+            datasets: [{
+                label: 'Supplier Lead Time',
+                data: calculateHistogram(leadTimes, 3, 35),
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
                     title: {
                         display: true,
                         text: 'Frequency'
                     }
-                }
-            }
-        }
-    });
-
-    // Time Domain Vibration Chart
-    const timeDomainCtx = document.getElementById('timeDomainChart').getContext('2d');
-    technicalCharts.timeDomainChart = new Chart(timeDomainCtx, {
-        type: 'line',
-        data: {
-            labels: ['00:00', '00:01', '00:02', '00:03', '00:04', '00:05'],
-            datasets: [{
-                label: 'Acceleration',
-                data: [1.1, 1.15, 1.21, 1.18, 1.25, 1.22],
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Acceleration (g)'
-                    }
                 },
                 x: {
                     title: {
                         display: true,
-                        text: 'Time'
+                        text: 'Lead Time (days)'
                     }
                 }
             }
         }
     });
+}
 
-    // Temperature Chart
-    const tempCtx = document.getElementById('temperatureChart').getContext('2d');
-    technicalCharts.temperatureChart = new Chart(tempCtx, {
+function createForecastChart() {
+    const ctx = document.getElementById('forecastChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    // Generate sample data
+    const actualData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    const forecastData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    
+    // Calculate confidence interval (simplified)
+    const upperConfidence = forecastData.map(val => val * 1.1);
+    const lowerConfidence = forecastData.map(val => val * 0.9);
+    
+    new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-            datasets: [{
-                label: 'Current Temperature',
-                data: [48, 49, 51, 53, 52, 50],
-                borderColor: '#e67e22',
-                backgroundColor: 'rgba(230, 126, 34, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            }, {
-                label: 'Historical Baseline',
-                data: [46, 47, 49, 50, 49, 48],
-                borderColor: '#95a5a6',
-                borderDash: [5, 5],
-                borderWidth: 1,
-                fill: false
-            }]
+            labels: months,
+            datasets: [
+                {
+                    label: 'Actual Demand',
+                    data: actualData,
+                    borderColor: '#1E88E5',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Forecast',
+                    data: forecastData,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Confidence Interval',
+                    data: upperConfidence,
+                    borderColor: 'rgba(76, 175, 80, 0.3)',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderDash: [5, 5],
+                    fill: '-1',
+                    pointRadius: 0
+                },
+                {
+                    label: 'Lower Bound',
+                    data: lowerConfidence,
+                    borderColor: 'rgba(76, 175, 80, 0.3)',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: '-1'
+                }
+            ]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
             scales: {
                 y: {
+                    beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Temperature (°C)'
+                        text: 'Units'
                     }
                 }
             }
         }
     });
+}
 
-    // Current Gauge Chart
-    const gaugeCtx = document.getElementById('currentGauge').getContext('2d');
-    technicalCharts.currentGauge = new Chart(gaugeCtx, {
-        type: 'doughnut',
+function createAccuracyChart() {
+    const ctx = document.getElementById('accuracyChart').getContext('2d');
+    const models = ['Moving Avg', 'ARIMA', 'Exponential', 'Neural Net'];
+    
+    const maeData = Array.from({length: 4}, () => Math.random() * 20 + 5);
+    const rmseData = Array.from({length: 4}, () => Math.random() * 25 + 10);
+    const mapeData = Array.from({length: 4}, () => Math.random() * 15 + 5);
+    
+    new Chart(ctx, {
+        type: 'bar',
         data: {
-            labels: ['Load', 'Remaining'],
+            labels: models,
+            datasets: [
+                {
+                    label: 'MAE',
+                    data: maeData,
+                    backgroundColor: 'rgba(30, 136, 229, 0.7)',
+                },
+                {
+                    label: 'RMSE',
+                    data: rmseData,
+                    backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                },
+                {
+                    label: 'MAPE',
+                    data: mapeData,
+                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Error Value'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createInventorySafetyChart() {
+    const ctx = document.getElementById('inventorySafetyChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const inventoryData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    const safetyData = Array.from({length: 12}, () => Math.floor(Math.random() * 500) + 200);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Inventory',
+                    data: inventoryData,
+                    borderColor: '#1E88E5',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Safety Stock',
+                    data: safetyData,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createStockHealthChart() {
+    const ctx = document.getElementById('stockHealthChart').getContext('2d');
+    const categories = ['Electronics', 'Apparel', 'Home Goods', 'Automotive', 'Toys'];
+    
+    const optimalData = Array.from({length: 5}, () => Math.floor(Math.random() * 100) + 50);
+    const overstockData = Array.from({length: 5}, () => Math.floor(Math.random() * 50));
+    const understockData = Array.from({length: 5}, () => Math.floor(Math.random() * 30));
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categories,
+            datasets: [
+                {
+                    label: 'Optimal',
+                    data: optimalData,
+                    backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                },
+                {
+                    label: 'Overstock',
+                    data: overstockData,
+                    backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                },
+                {
+                    label: 'Understock',
+                    data: understockData,
+                    backgroundColor: 'rgba(244, 67, 54, 0.7)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    stacked: true,
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                },
+                x: {
+                    stacked: true
+                }
+            }
+        }
+    });
+}
+
+function createWarehouseHeatmap() {
+    const ctx = document.getElementById('warehouseHeatmap').getContext('2d');
+    const warehouses = ['North', 'South', 'East', 'West', 'Central'];
+    const products = ['Electronics', 'Apparel', 'Home Goods', 'Automotive', 'Toys'];
+    
+    // Generate sample heatmap data
+    const data = {
+        labels: products,
+        datasets: warehouses.map((warehouse, i) => ({
+            label: warehouse,
+            data: Array.from({length: 5}, () => Math.floor(Math.random() * 1000) + 100),
+            backgroundColor: `rgba(30, 136, 229, ${0.3 + i * 0.15})`
+        }))
+    };
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createFlowChart() {
+    const ctx = document.getElementById('flowChart').getContext('2d');
+    const nodes = ['Supplier A', 'Supplier B', 'Warehouse N', 'Warehouse S', 'Retail E', 'Retail W'];
+    
+    // Generate sample flow data (simplified)
+    const flowData = [
+        [0, 0, 500, 300, 0, 0],
+        [0, 0, 400, 200, 0, 0],
+        [0, 0, 0, 100, 300, 200],
+        [0, 0, 50, 0, 250, 150],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0]
+    ];
+    
+    // This is a simplified representation - a true Sankey diagram would require a specialized library
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: nodes,
             datasets: [{
-                data: [72, 28],
-                backgroundColor: ['#3498db', '#ecf0f1'],
-                borderWidth: 0
+                label: 'Inventory Flow',
+                data: [900, 600, 650, 650, 550, 350],
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
             }]
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
             plugins: {
                 legend: {
                     display: false
-                },
-                tooltip: {
-                    enabled: false
                 }
-            }
-        }
-    });
-
-    // Current Trend Chart
-    const currentTrendCtx = document.getElementById('currentTrendChart').getContext('2d');
-    technicalCharts.currentTrendChart = new Chart(currentTrendCtx, {
-        type: 'line',
-        data: {
-            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
-            datasets: [{
-                label: 'Current Load',
-                data: [68, 70, 72, 75, 71, 69],
-                borderColor: '#9b59b6',
-                backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            },
             scales: {
                 y: {
+                    beginAtZero: true,
                     title: {
                         display: true,
-                        text: 'Current (%)'
+                        text: 'Units'
                     }
                 }
             }
         }
     });
+}
 
-    // Anomaly Scatter Chart
-    const anomalyScatterCtx = document.getElementById('anomalyScatterChart').getContext('2d');
-    technicalCharts.anomalyScatterChart = new Chart(anomalyScatterCtx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Normal',
-                data: [
-                    {x: 1.1, y: 45}, {x: 1.2, y: 48}, {x: 1.0, y: 46},
-                    {x: 1.3, y: 50}, {x: 1.1, y: 47}, {x: 1.2, y: 49}
-                ],
-                backgroundColor: '#2ecc71',
-                pointRadius: 6
-            }, {
-                label: 'Anomalies',
-                data: [
-                    {x: 2.1, y: 58}, {x: 1.8, y: 62}, {x: 3.5, y: 55}
-                ],
-                backgroundColor: '#e74c3c',
-                pointRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Vibration (g)'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    }
-                }
-            }
-        }
-    });
-
-    // Failure Probability Chart
-    const failureProbCtx = document.getElementById('failureProbabilityChart').getContext('2d');
-    technicalCharts.failureProbabilityChart = new Chart(failureProbCtx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Failure Probability',
-                data: [5, 8, 12, 15, 18, 22, 25, 28, 32, 35, 38, 42],
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Probability (%)'
-                    }
-                }
-            }
-        }
-    });
-
-    // Inventory Chart
-    const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
-    technicalCharts.inventoryChart = new Chart(inventoryCtx, {
+function createPOChart() {
+    const ctx = document.getElementById('poChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const poData = Array.from({length: 12}, () => Math.floor(Math.random() * 50) + 10);
+    
+    new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Bearing', 'Belt', 'Seal', 'Coupling', 'Sensor'],
+            labels: months,
             datasets: [{
-                label: 'Current Stock',
-                data: [2, 3, 8, 5, 12],
+                label: 'Purchase Orders',
+                data: poData,
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of POs'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createBreachChart() {
+    const ctx = document.getElementById('breachChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const breachData = Array.from({length: 12}, () => Math.floor(Math.random() * 20) + 5);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [{
+                label: 'Threshold Breaches',
+                data: breachData,
+                borderColor: '#F44336',
+                backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Breaches'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createScenarioChart() {
+    const ctx = document.getElementById('scenarioChart').getContext('2d');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const baselineData = Array.from({length: 12}, () => Math.floor(Math.random() * 1000) + 500);
+    const scenarioData = baselineData.map(val => val * 1.1); // 10% increase
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Baseline',
+                    data: baselineData,
+                    borderColor: '#1E88E5',
+                    backgroundColor: 'rgba(30, 136, 229, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                },
+                {
+                    label: 'Scenario',
+                    data: scenarioData,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.4,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Units'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createSensitivityChart() {
+    const ctx = document.getElementById('sensitivityChart').getContext('2d');
+    const factors = ['Demand', 'Lead Time', 'Carrying Cost', 'Stockout Cost', 'Supplier Reliability'];
+    
+    const sensitivityData = Array.from({length: 5}, () => Math.random() * 30 + 10);
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: factors,
+            datasets: [{
+                label: 'Sensitivity Impact',
+                data: sensitivityData,
                 backgroundColor: [
-                    '#e74c3c', '#f39c12', '#2ecc71', '#3498db', '#9b59b6'
+                    'rgba(30, 136, 229, 0.7)',
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(255, 152, 0, 0.7)',
+                    'rgba(244, 67, 54, 0.7)',
+                    'rgba(156, 39, 176, 0.7)'
                 ],
-                borderWidth: 0
-            }, {
-                label: 'Minimum Required',
-                data: [5, 5, 5, 3, 8],
-                backgroundColor: 'rgba(52, 73, 94, 0.3)',
-                borderWidth: 0,
-                type: 'bar'
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Impact on Total Cost (%)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createPreviewCharts() {
+    // Create mini charts for report previews
+    const previewCtx1 = document.getElementById('previewChart1').getContext('2d');
+    const previewCtx2 = document.getElementById('previewChart2').getContext('2d');
+    const previewCtx3 = document.getElementById('previewChart3').getContext('2d');
+    const previewCtx4 = document.getElementById('previewChart4').getContext('2d');
+    
+    const labels = ['Q1', 'Q2', 'Q3', 'Q4'];
+    
+    // Chart 1: Inventory Summary
+    new Chart(previewCtx1, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Inventory',
+                data: [1200, 1100, 1300, 1000],
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -454,113 +964,17 @@ function initializeTechnicalCharts() {
             }
         }
     });
-
-    // Multi Trend Chart
-    const multiTrendCtx = document.getElementById('multiTrendChart').getContext('2d');
-    technicalCharts.multiTrendChart = new Chart(multiTrendCtx, {
+    
+    // Chart 2: Demand Forecast
+    new Chart(previewCtx2, {
         type: 'line',
         data: {
-            labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+            labels: labels,
             datasets: [{
-                label: 'Vibration',
-                data: [1.1, 1.15, 1.21, 1.18, 1.25, 1.22],
-                borderColor: '#e74c3c',
-                backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true,
-                yAxisID: 'y'
-            }, {
-                label: 'Temperature',
-                data: [48, 49, 51, 53, 52, 50],
-                borderColor: '#e67e22',
-                backgroundColor: 'rgba(230, 126, 34, 0.1)',
-                borderWidth: 2,
-                tension: 0.4,
-                fill: true,
-                yAxisID: 'y1'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Vibration (g)'
-                    }
-                },
-                y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    },
-                    grid: {
-                        drawOnChartArea: false
-                    }
-                }
-            }
-        }
-    });
-
-    // Correlation Heatmap
-    const correlationHeatmapCtx = document.getElementById('correlationHeatmap').getContext('2d');
-    technicalCharts.correlationHeatmap = new Chart(correlationHeatmapCtx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Operation Points',
-                data: [
-                    {x: 60, y: 1.0}, {x: 70, y: 1.1}, {x: 80, y: 1.3},
-                    {x: 85, y: 1.8}, {x: 90, y: 2.2}, {x: 95, y: 2.8},
-                    {x: 100, y: 3.5}
-                ],
-                backgroundColor: [
-                    '#2ecc71', '#2ecc71', '#f39c12',
-                    '#f39c12', '#e74c3c', '#e74c3c', '#c0392b'
-                ],
-                pointRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Machine Speed (%)'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Vibration (g)'
-                    }
-                }
-            }
-        }
-    });
-
-    // Sensor Detail Chart
-    const sensorDetailCtx = document.getElementById('sensorDetailChart').getContext('2d');
-    technicalCharts.sensorDetailChart = new Chart(sensorDetailCtx, {
-        type: 'line',
-        data: {
-            labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00'],
-            datasets: [{
-                label: 'Sensor Signal',
-                data: [1.1, 1.15, 1.21, 1.18, 1.25, 1.22],
-                borderColor: '#3498db',
-                backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                borderWidth: 2,
+                label: 'Demand',
+                data: [900, 950, 1100, 1050],
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
                 tension: 0.4,
                 fill: true
             }]
@@ -568,331 +982,209 @@ function initializeTechnicalCharts() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
             scales: {
                 y: {
-                    title: {
-                        display: true,
-                        text: 'Signal Value'
-                    }
+                    beginAtZero: true
                 }
             }
         }
     });
-
-    console.log('All technical charts initialized!');
-}
-
-// ===== INTERACTIVITY =====
-
-// Machine Tabs
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('machine-tab')) {
-        const tabs = document.querySelectorAll('.machine-tab');
-        tabs.forEach(tab => tab.classList.remove('active'));
-        e.target.classList.add('active');
-        
-        // Update charts based on selected machine
-        updateMachineCharts(e.target.dataset.machine);
-    }
-});
-
-function updateMachineCharts(machine) {
-    // This would update charts based on selected machine
-    console.log('Switching to machine:', machine);
-}
-
-// Vibration Sensor Selector
-document.getElementById('vibrationSensorSelect').addEventListener('change', function(e) {
-    updateVibrationChart(e.target.value);
-});
-
-function updateVibrationChart(sensor) {
-    if (!technicalCharts.timeDomainChart) return;
     
-    // Simulate different sensor data
-    const data = sensor === 'yankee_r' 
-        ? [1.1, 1.15, 1.21, 1.18, 1.25, 1.22]
-        : [1.3, 1.35, 1.41, 1.38, 1.45, 1.42];
-    
-    technicalCharts.timeDomainChart.data.datasets[0].data = data;
-    technicalCharts.timeDomainChart.update();
-}
-
-// Temperature Time Range
-document.getElementById('tempTimeRange').addEventListener('change', function(e) {
-    // This would update temperature chart time range
-    console.log('Time range changed to:', e.target.value);
-});
-
-// Component Select for RUL
-document.getElementById('componentSelect').addEventListener('change', function(e) {
-    updateRULChart(e.target.value);
-});
-
-function updateRULChart(component) {
-    if (!technicalCharts.failureProbabilityChart) return;
-    
-    // Simulate different failure probability data
-    const data = {
-        'dryer_bearing': [5, 8, 12, 15, 18, 22, 25, 28, 32, 35, 38, 42],
-        'press_roll': [3, 5, 8, 12, 15, 18, 20, 23, 26, 29, 32, 35],
-        'yankee_cylinder': [2, 3, 5, 7, 10, 13, 16, 19, 22, 25, 28, 31]
-    };
-    
-    technicalCharts.failureProbabilityChart.data.datasets[0].data = data[component] || data['dryer_bearing'];
-    technicalCharts.failureProbabilityChart.update();
-    
-    // Update RUL display
-    const rulValues = {
-        'dryer_bearing': 142,
-        'press_roll': 87,
-        'yankee_cylinder': 215
-    };
-    
-    const healthIndex = {
-        'dryer_bearing': 78,
-        'press_roll': 65,
-        'yankee_cylinder': 85
-    };
-    
-    document.querySelector('.rul-value').textContent = rulValues[component] || 142;
-    document.querySelector('.index-value').textContent = healthIndex[component] || 78;
-}
-
-// Correlation Type Selector
-document.getElementById('correlationType').addEventListener('change', function(e) {
-    updateCorrelationChart(e.target.value);
-});
-
-function updateCorrelationChart(type) {
-    if (!technicalCharts.correlationHeatmap) return;
-    
-    const chart = technicalCharts.correlationHeatmap;
-    
-    switch(type) {
-        case 'vibration-temp':
-            chart.data.datasets[0].data = [
-                {x: 45, y: 1.0}, {x: 48, y: 1.1}, {x: 50, y: 1.3},
-                {x: 52, y: 1.5}, {x: 54, y: 1.7}, {x: 56, y: 1.9},
-                {x: 58, y: 2.1}
-            ];
-            chart.options.scales.x.title.text = 'Temperature (°C)';
-            chart.options.scales.y.title.text = 'Vibration (g)';
-            break;
-        case 'speed-failure':
-            chart.data.datasets[0].data = [
-                {x: 60, y: 5}, {x: 70, y: 8}, {x: 80, y: 15},
-                {x: 85, y: 25}, {x: 90, y: 45}, {x: 95, y: 65},
-                {x: 100, y: 85}
-            ];
-            chart.options.scales.x.title.text = 'Machine Speed (%)';
-            chart.options.scales.y.title.text = 'Failure Probability (%)';
-            break;
-        case 'load-vibration':
-            chart.data.datasets[0].data = [
-                {x: 50, y: 0.8}, {x: 60, y: 1.0}, {x: 70, y: 1.2},
-                {x: 80, y: 1.4}, {x: 90, y: 1.6}, {x: 95, y: 1.8},
-                {x: 100, y: 2.0}
-            ];
-            chart.options.scales.x.title.text = 'Load (%)';
-            chart.options.scales.y.title.text = 'Vibration (g)';
-            break;
-    }
-    
-    chart.update();
-}
-
-// FMECA Table Interactions
-document.querySelectorAll('.fmeca-table tbody tr').forEach(row => {
-    row.addEventListener('click', function() {
-        const component = this.cells[0].textContent;
-        const failureMode = this.cells[1].textContent;
-        const effect = this.cells[2].textContent;
-        const rpn = this.cells[3].textContent;
-        
-        const detailsContent = `
-            <h4>${component}</h4>
-            <p><strong>Failure Mode:</strong> ${failureMode}</p>
-            <p><strong>Effect:</strong> ${effect}</p>
-            <p><strong>Risk Priority Number:</strong> ${rpn}</p>
-            <div class="historical-incidents">
-                <h5>Historical Incidents</h5>
-                <ul>
-                    <li>2024-01-15: Bearing replacement due to wear</li>
-                    <li>2024-03-22: Vibration spike detected</li>
-                </ul>
-            </div>
-        `;
-        
-        document.querySelector('.details-content').innerHTML = detailsContent;
-    });
-});
-
-// Root Cause Explorer
-let currentLevel = 'machine';
-const explorerTree = {
-    'yankee': ['yankee_bearing', 'yankee_cylinder'],
-    'refiners': ['refiner_motor', 'refiner_blades'],
-    'press': ['press_roll', 'press_felt'],
-    'yankee_bearing': ['vibration_sensor', 'temp_sensor'],
-    'yankee_cylinder': ['surface_sensor', 'temp_sensor']
-};
-
-document.querySelectorAll('.tree-node').forEach(node => {
-    node.addEventListener('click', function() {
-        const target = this.dataset.target;
-        
-        // Update breadcrumb
-        updateBreadcrumb(target);
-        
-        // Show appropriate level
-        showTreeLevel(target);
-        
-        // Update sensor dashboard if at component level
-        if (target.includes('sensor')) {
-            showSensorDashboard(target);
-        }
-    });
-});
-
-function updateBreadcrumb(target) {
-    const breadcrumb = document.getElementById('explorerBreadcrumb');
-    let breadcrumbHTML = '<span class="breadcrumb-item" data-level="machine">Machine Level</span>';
-    
-    if (target.includes('_')) {
-        breadcrumbHTML += ' <i class="fas fa-chevron-right"></i> <span class="breadcrumb-item" data-level="subsystem">Subsystem</span>';
-    }
-    
-    if (target.includes('sensor')) {
-        breadcrumbHTML += ' <i class="fas fa-chevron-right"></i> <span class="breadcrumb-item active" data-level="component">Component</span>';
-    } else {
-        breadcrumbHTML += ' <span class="breadcrumb-item active">' + getDisplayName(target) + '</span>';
-    }
-    
-    breadcrumb.innerHTML = breadcrumbHTML;
-    
-    // Add click events to breadcrumb items
-    breadcrumb.querySelectorAll('.breadcrumb-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const level = this.dataset.level;
-            if (level) {
-                showTreeLevel(level);
-                updateBreadcrumb(level);
+    // Chart 3: Stock Health
+    new Chart(previewCtx3, {
+        type: 'doughnut',
+        data: {
+            labels: ['Optimal', 'Overstock', 'Understock'],
+            datasets: [{
+                data: [70, 20, 10],
+                backgroundColor: [
+                    'rgba(76, 175, 80, 0.7)',
+                    'rgba(255, 152, 0, 0.7)',
+                    'rgba(244, 67, 54, 0.7)'
+                ],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
             }
-        });
-    });
-}
-
-function showTreeLevel(target) {
-    // Hide all levels
-    document.querySelectorAll('.tree-level').forEach(level => {
-        level.classList.add('hidden');
-    });
-    
-    // Show appropriate level
-    if (target === 'machine' || !target.includes('_')) {
-        document.querySelector('.machine-level').classList.remove('hidden');
-        currentLevel = 'machine';
-    } else if (target.includes('sensor')) {
-        document.querySelector('.component-level').classList.remove('hidden');
-        currentLevel = 'component';
-    } else {
-        document.querySelector('.subsystem-level').classList.remove('hidden');
-        currentLevel = 'subsystem';
-    }
-}
-
-function showSensorDashboard(sensor) {
-    document.querySelector('.dashboard-placeholder').classList.add('hidden');
-    document.querySelector('.sensor-dashboard').classList.remove('hidden');
-    
-    const sensorTitle = document.getElementById('sensorTitle');
-    const sensorId = document.querySelector('.sensor-id');
-    
-    sensorTitle.textContent = getDisplayName(sensor) + ' Analysis';
-    sensorId.textContent = 'ID: ' + sensor.toUpperCase();
-    
-    // Update sensor chart data
-    if (technicalCharts.sensorDetailChart) {
-        // Simulate different sensor data
-        const data = sensor === 'vibration_sensor' 
-            ? [1.1, 1.15, 1.21, 1.18, 1.25, 1.22]
-            : [48, 49, 51, 53, 52, 50];
-        
-        technicalCharts.sensorDetailChart.data.datasets[0].data = data;
-        technicalCharts.sensorDetailChart.data.datasets[0].label = getDisplayName(sensor);
-        technicalCharts.sensorDetailChart.update();
-    }
-}
-
-function getDisplayName(key) {
-    const names = {
-        'yankee': 'Yankee Dryer',
-        'refiners': 'Refiners',
-        'press': 'Press Section',
-        'yankee_bearing': 'Bearing Assembly',
-        'yankee_cylinder': 'Cylinder Surface',
-        'vibration_sensor': 'Vibration Sensor',
-        'temp_sensor': 'Temperature Sensor',
-        'surface_sensor': 'Surface Sensor'
-    };
-    
-    return names[key] || key;
-}
-
-// Schedule Maintenance Buttons
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('schedule-btn') || e.target.closest('.schedule-btn')) {
-        const button = e.target.classList.contains('schedule-btn') ? e.target : e.target.closest('.schedule-btn');
-        const taskTitle = button.closest('.task-item').querySelector('.task-title').textContent;
-        alert(`Scheduling maintenance: ${taskTitle}\n\nThis would open a scheduling dialog in a real application.`);
-    }
-});
-
-// Drill Down Buttons
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('drill-down') || e.target.closest('.drill-down')) {
-        const button = e.target.classList.contains('drill-down') ? e.target : e.target.closest('.drill-down');
-        const anomalyTitle = button.closest('.anomaly-item').querySelector('.anomaly-title').textContent;
-        alert(`Drilling down into: ${anomalyTitle}\n\nThis would show detailed analysis for this specific anomaly.`);
-    }
-});
-
-// Export FMECA
-document.getElementById('exportFmeca').addEventListener('click', function() {
-    alert('Exporting FMECA Analysis...\n\nReport would be generated and downloaded in PDF format.');
-});
-
-// Initialize technical charts if technical dashboard is active on page load
-document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('technical').classList.contains('active')) {
-        setTimeout(initializeTechnicalCharts, 100);
-    }
-    
-    // Initialize RUL for default component
-    updateRULChart('dryer_bearing');
-});
-
-// Modal functionality (existing)
-document.querySelectorAll('.technical-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const modalId = card.getAttribute('data-modal');
-        if (modalId) {
-            document.getElementById(modalId).style.display = 'block';
         }
     });
-});
-
-// Close modal functionality
-document.querySelectorAll('.close-modal').forEach(closeBtn => {
-    closeBtn.addEventListener('click', () => {
-        closeBtn.closest('.modal').style.display = 'none';
+    
+    // Chart 4: Warehouse Performance
+    new Chart(previewCtx4, {
+        type: 'bar',
+        data: {
+            labels: ['North', 'South', 'East', 'West'],
+            datasets: [{
+                label: 'Efficiency',
+                data: [85, 92, 78, 88],
+                backgroundColor: 'rgba(30, 136, 229, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
     });
-});
+}
 
-// Close modal when clicking outside content
-window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
+// Helper Functions
+function calculateHistogram(data, binSize, maxValue) {
+    const histogram = Array(Math.ceil(maxValue / binSize)).fill(0);
+    data.forEach(value => {
+        const binIndex = Math.floor(value / binSize);
+        if (binIndex < histogram.length) {
+            histogram[binIndex]++;
+        }
+    });
+    return histogram;
+}
+
+function populateAlertTable() {
+    const tableBody = document.getElementById('alertTableBody');
+    
+    // Sample alert data
+    const alerts = [
+        { date: '2023-10-15', type: 'Stockout', severity: 'high', description: 'SKU A-123 below safety stock', status: 'Active' },
+        { date: '2023-10-14', type: 'Overstock', severity: 'medium', description: 'SKU B-456 exceeds maximum level', status: 'Resolved' },
+        { date: '2023-10-13', type: 'Lead Time', severity: 'medium', description: 'Supplier C delayed by 7 days', status: 'Active' },
+        { date: '2023-10-12', type: 'Quality', severity: 'low', description: 'Minor quality issue with batch D-789', status: 'Resolved' },
+        { date: '2023-10-11', type: 'Stockout', severity: 'high', description: 'SKU E-012 critical low stock', status: 'Active' }
+    ];
+    
+    // Clear existing rows
+    tableBody.innerHTML = '';
+    
+    // Add alert rows
+    alerts.forEach(alert => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${alert.date}</td>
+            <td>${alert.type}</td>
+            <td class="alert-${alert.severity}">${alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}</td>
+            <td>${alert.description}</td>
+            <td>${alert.status}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+function setupScenarioSliders() {
+    const demandSlider = document.getElementById('demandSurge');
+    const demandValue = document.getElementById('demandValue');
+    const delaySlider = document.getElementById('supplierDelay');
+    const delayValue = document.getElementById('delayValue');
+    const variabilitySlider = document.getElementById('leadTimeVar');
+    const variabilityValue = document.getElementById('variabilityValue');
+    
+    if (demandSlider) {
+        demandSlider.addEventListener('input', function() {
+            demandValue.textContent = `${this.value}%`;
+            updateScenarioAnalysis();
+        });
     }
-});
+    
+    if (delaySlider) {
+        delaySlider.addEventListener('input', function() {
+            delayValue.textContent = `${this.value} days`;
+            updateScenarioAnalysis();
+        });
+    }
+    
+    if (variabilitySlider) {
+        variabilitySlider.addEventListener('input', function() {
+            variabilityValue.textContent = `${this.value}%`;
+            updateScenarioAnalysis();
+        });
+    }
+}
+
+function setupAlertFilters() {
+    const searchInput = document.getElementById('alertSearch');
+    const severityFilter = document.getElementById('severityFilter');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', filterAlerts);
+    }
+    
+    if (severityFilter) {
+        severityFilter.addEventListener('change', filterAlerts);
+    }
+}
+
+function filterAlerts() {
+    // In a real application, this would filter the alert table
+    // For this demo, we'll just repopulate the table
+    populateAlertTable();
+}
+
+function setupReportFilters() {
+    const applyButton = document.getElementById('applyFilters');
+    
+    if (applyButton) {
+        applyButton.addEventListener('click', function() {
+            // In a real application, this would apply the filters and update the report previews
+            alert('Filters applied! In a real application, this would update the report data.');
+        });
+    }
+}
+
+function setupExportButtons() {
+    const exportPDF = document.getElementById('exportPDF');
+    const exportCSV = document.getElementById('exportCSV');
+    const exportImage = document.getElementById('exportImage');
+    
+    if (exportPDF) {
+        exportPDF.addEventListener('click', function() {
+            alert('PDF export functionality would be implemented here.');
+        });
+    }
+    
+    if (exportCSV) {
+        exportCSV.addEventListener('click', function() {
+            alert('CSV export functionality would be implemented here.');
+        });
+    }
+    
+    if (exportImage) {
+        exportImage.addEventListener('click', function() {
+            alert('Image export functionality would be implemented here.');
+        });
+    }
+}
+
+function updateForecastModel(model) {
+    // In a real application, this would update the forecast charts based on the selected model
+    console.log(`Forecast model updated to: ${model}`);
+}
+
+function updateForecastHorizon(months) {
+    // In a real application, this would update the forecast charts based on the selected horizon
+    console.log(`Forecast horizon updated to: ${months} months`);
+}
+
+function updateScenarioAnalysis() {
+    // In a real application, this would update the scenario analysis based on slider values
+    console.log('Scenario analysis updated based on new parameters');
+}

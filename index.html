@@ -3,1080 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paper Machine Health & Efficiency Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <title>Inventory Forecasting & Optimization Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
     <div class="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
             <div class="logo">
-                <h1><i class="fas fa-industry"></i> PaperTech Pro</h1>
+                <h2>InventoryPro</h2>
             </div>
             <ul class="nav-links">
-                <li class="active"><a href="#" data-tab="c-level"><i class="fas fa-tachometer-alt"></i> C-Level Dashboard</a></li>
-                <li><a href="#" data-tab="technical"><i class="fas fa-cogs"></i> Technical Dashboard</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i> Analytics</a></li>
-                <li><a href="#"><i class="fas fa-cogs"></i> Machine Status</a></li>
-                <li><a href="#"><i class="fas fa-exclamation-triangle"></i> Alerts</a></li>
-                <li><a href="#"><i class="fas fa-file-alt"></i> Reports</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                <li class="nav-item active" data-tab="overview">
+                    <span class="icon">📊</span>
+                    <span class="text">Overview</span>
+                </li>
+                <li class="nav-item" data-tab="historical">
+                    <span class="icon">📈</span>
+                    <span class="text">Historical Data</span>
+                </li>
+                <li class="nav-item" data-tab="forecasting">
+                    <span class="icon">🔮</span>
+                    <span class="text">Forecasting</span>
+                </li>
+                <li class="nav-item" data-tab="inventory">
+                    <span class="icon">📦</span>
+                    <span class="text">Inventory Health</span>
+                </li>
+                <li class="nav-item" data-tab="warehouses">
+                    <span class="icon">🏭</span>
+                    <span class="text">Warehouses</span>
+                </li>
+                <li class="nav-item" data-tab="alerts">
+                    <span class="icon">⚠️</span>
+                    <span class="text">Alerts</span>
+                </li>
+                <li class="nav-item" data-tab="scenario">
+                    <span class="icon">🧮</span>
+                    <span class="text">Scenario Planning</span>
+                </li>
+                <li class="nav-item" data-tab="reports">
+                    <span class="icon">📋</span>
+                    <span class="text">Reports</span>
+                </li>
             </ul>
-        </div>
-        
+        </nav>
+
         <!-- Main Content -->
-        <div class="main-content">
-            <!-- C-Level Dashboard -->
-            <div id="c-level" class="dashboard-content active">
-                <div class="header">
-                    <h2>Paper Machine Health & Efficiency Dashboard</h2>
-                    <div class="user-info">
-                        <div class="date-time">
-                            <span id="current-date"></span>
-                        </div>
-                        <div class="user">
-                            <i class="fas fa-user-circle"></i> John Smith (Operations Director)
-                        </div>
+        <main class="main-content">
+            <!-- Top Navigation Bar -->
+            <header class="top-nav">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="nav-icons">
+                    <div class="notification">
+                        <span class="icon">🔔</span>
+                        <span class="badge">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzMzMyI+PHBhdGggZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgM2MyLjY2IDAgNC44MyAxLjQ0IDYuMDUgMy41NUg1Ljk1QzcuMTcgNi40NCA5LjM0IDUgMTIgNXptMCAxNGE4Ljk1IDguOTUgMCAwMS02LjA1LTIuNDVjLjA2LS43OC4yNy0yLjA3Ljk3LTMuMTJDNy42MiAxMy42OSA5LjcxIDEzIDEyIDEzczQuMzguNjkgNS4wOCAxLjQzYy43IDEuMDUuOTEgMi4zNC45NyAzLjEyQTIuOTUgMi45NSAwIDAxMTIgMTl6Ii8+PC9zdmc+" alt="User Avatar">
+                        <span>Admin User</span>
                     </div>
                 </div>
-                
-                <!-- Stats Cards -->
-                <div class="stats-cards">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">OVERALL EQUIPMENT EFFICIENCY</div>
-                            <div class="card-icon" style="background: var(--secondary);">
-                                <i class="fas fa-cogs"></i>
-                            </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content">
+                <!-- Overview Tab -->
+                <section id="overview" class="tab-content active">
+                    <h2>Overview</h2>
+                    <div class="kpi-cards">
+                        <div class="kpi-card">
+                            <h3>Forecast Accuracy</h3>
+                            <div class="kpi-value">87%</div>
+                            <div class="kpi-indicator good"></div>
                         </div>
-                        <div class="card-value">86.2%</div>
-                        <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> 2.1% from last month
+                        <div class="kpi-card">
+                            <h3>Inventory Turnover</h3>
+                            <div class="kpi-value">5.2</div>
+                            <div class="kpi-indicator medium"></div>
                         </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">MACHINE HEALTH INDEX</div>
-                            <div class="card-icon" style="background: var(--success);">
-                                <i class="fas fa-heartbeat"></i>
-                            </div>
+                        <div class="kpi-card">
+                            <h3>Carrying Cost</h3>
+                            <div class="kpi-value">18%</div>
+                            <div class="kpi-indicator good"></div>
                         </div>
-                        <div class="card-value">92%</div>
-                        <div class="card-change positive">
-                            <i class="fas fa-arrow-up"></i> 1.5% from last week
+                        <div class="kpi-card">
+                            <h3>Stockout Rate</h3>
+                            <div class="kpi-value">2.3%</div>
+                            <div class="kpi-indicator good"></div>
                         </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">DOWNTIME THIS MONTH</div>
-                            <div class="card-icon" style="background: var(--danger);">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                        </div>
-                        <div class="card-value">18.5 hrs</div>
-                        <div class="card-change negative">
-                            <i class="fas fa-arrow-up"></i> 3.2 hrs from target
+                        <div class="kpi-card">
+                            <h3>Overstock Value</h3>
+                            <div class="kpi-value">$124K</div>
+                            <div class="kpi-indicator bad"></div>
                         </div>
                     </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">COST IMPACT</div>
-                            <div class="card-icon" style="background: var(--warning);">
-                                <i class="fas fa-dollar-sign"></i>
-                            </div>
-                        </div>
-                        <div class="card-value">$124,750</div>
-                        <div class="card-change negative">
-                            <i class="fas fa-arrow-up"></i> $12,300 from last month
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Dashboard Grid -->
-                <div class="dashboard-grid">
-                    <!-- OEE Breakdown -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">OEE Breakdown</div>
-                            <div class="dashboard-actions">
-                                <button class="btn btn-primary">View Details</button>
-                            </div>
-                        </div>
-                        <div class="oee-metrics">
-                            <div class="oee-metric">
-                                <div class="oee-label">
-                                    <span class="oee-name">Availability</span>
-                                    <span class="oee-value">92%</span>
-                                </div>
-                                <div class="oee-progress-bar">
-                                    <div class="oee-progress" style="width: 92%; background: #3498db;">
-                                        <div class="oee-tooltip">Availability: 92% (Target: 90%)</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="oee-metric">
-                                <div class="oee-label">
-                                    <span class="oee-name">Performance</span>
-                                    <span class="oee-value">95%</span>
-                                </div>
-                                <div class="oee-progress-bar">
-                                    <div class="oee-progress" style="width: 95%; background: #2ecc71;">
-                                        <div class="oee-tooltip">Performance: 95% (Target: 95%)</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="oee-metric">
-                                <div class="oee-label">
-                                    <span class="oee-name">Quality</span>
-                                    <span class="oee-value">96%</span>
-                                </div>
-                                <div class="oee-progress-bar">
-                                    <div class="oee-progress" style="width: 96%; background: #9b59b6;">
-                                        <div class="oee-tooltip">Quality: 96% (Target: 99%)</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Machine Health Index -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">Machine Health Index</div>
-                            <div class="dashboard-actions">
-                                <button class="btn">Last 30 Days</button>
-                            </div>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Sales vs Demand vs Forecast</h3>
+                            <canvas id="salesDemandChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="healthChart"></canvas>
+                            <h3>Overstock vs Understock</h3>
+                            <canvas id="stockStatusChart"></canvas>
                         </div>
                     </div>
-                    
-                    <!-- Critical Failure Forecast -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">Critical Failure Forecast</div>
-                            <div class="dashboard-actions">
-                                <button class="btn">View All</button>
-                            </div>
+                    <div class="chart-row">
+                        <div class="chart-container full-width">
+                            <h3>Warehouse Distribution</h3>
+                            <div id="warehouseMap"></div>
                         </div>
-                        <ul class="risk-list">
-                            <li class="risk-item critical">
-                                <div class="risk-header">
-                                    <div class="risk-name">Dryer Roll Bearing</div>
-                                    <div class="risk-probability">75%</div>
-                                </div>
-                                <div class="risk-details">Failure probability in 30 days</div>
-                                <div class="progress-bar">
-                                    <div class="progress" style="width: 75%; background: var(--danger);"></div>
-                                </div>
-                            </li>
-                            <li class="risk-item">
-                                <div class="risk-header">
-                                    <div class="risk-name">Press Section Roll</div>
-                                    <div class="risk-probability">60%</div>
-                                </div>
-                                <div class="risk-details">Failure probability in 45 days</div>
-                                <div class="progress-bar">
-                                    <div class="progress" style="width: 60%; background: var(--warning);"></div>
-                                </div>
-                            </li>
-                            <li class="risk-item">
-                                <div class="risk-header">
-                                    <div class="risk-name">Main Drive Gearbox</div>
-                                    <div class="risk-probability">45%</div>
-                                </div>
-                                <div class="risk-details">Failure probability in 60 days</div>
-                                <div class="progress-bar">
-                                    <div class="progress" style="width: 45%; background: var(--warning);"></div>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
-                    
-                    <!-- Downtime Impact -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">Downtime Impact</div>
-                            <div class="dashboard-actions">
-                                <button class="btn">Last 6 Months</button>
-                            </div>
+                </section>
+
+                <!-- Historical Data Tab -->
+                <section id="historical" class="tab-content">
+                    <h2>Historical Data</h2>
+                    <div class="controls">
+                        <select id="categorySelect">
+                            <option value="all">All Categories</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="apparel">Apparel</option>
+                            <option value="home">Home Goods</option>
+                        </select>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Monthly Demand Trend</h3>
+                            <canvas id="demandTrendChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="downtimeChart"></canvas>
+                            <h3>Demand Seasonality</h3>
+                            <canvas id="seasonalityChart"></canvas>
                         </div>
                     </div>
-                    
-                    <!-- Risk Heatmap -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">Risk Heatmap</div>
-                            <div class="dashboard-actions">
-                                <button class="btn">Filter</button>
-                            </div>
-                        </div>
-                        <div class="heatmap">
-                            <div class="heatmap-item criticality-A" title="Headbox / Inlet vat">Headbox</div>
-                            <div class="heatmap-item criticality-A" title="Wire table">Wire Table</div>
-                            <div class="heatmap-item criticality-B" title="Shaker roll">Shaker Roll</div>
-                            <div class="heatmap-item criticality-A" title="Press section">Press Section</div>
-                            <div class="heatmap-item criticality-A" title="Felt conveyor">Felt Conveyor</div>
-                            <div class="heatmap-item criticality-B" title="Vacuum box">Vacuum Box</div>
-                            <div class="heatmap-item criticality-A" title="Yankee cylinder">Yankee Cylinder</div>
-                            <div class="heatmap-item criticality-B" title="Drying hood">Drying Hood</div>
-                            <div class="heatmap-item criticality-C" title="Heat exchanger">Heat Exchanger</div>
-                            <div class="heatmap-item criticality-C" title="Condenser">Condenser</div>
-                            <div class="heatmap-item criticality-A" title="Doctor blade">Doctor Blade</div>
-                            <div class="heatmap-item criticality-B" title="Discharge conveyor">Discharge Conveyor</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Cost Impact Analysis -->
-                    <div class="dashboard-item">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">Cost Impact Analysis</div>
-                            <div class="dashboard-actions">
-                                <button class="btn">Details</button>
-                            </div>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Demand Variability</h3>
+                            <canvas id="variabilityChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="costChart"></canvas>
-                        </div>
-                        <div class="cost-breakdown">
-                            <div class="cost-item">
-                                <div class="cost-name">
-                                    <div class="cost-color" style="background: #3498db;"></div>
-                                    <span>Maintenance</span>
-                                </div>
-                                <div>$45,200</div>
-                            </div>
-                            <div class="cost-item">
-                                <div class="cost-name">
-                                    <div class="cost-color" style="background: #e74c3c;"></div>
-                                    <span>Downtime</span>
-                                </div>
-                                <div>$52,500</div>
-                            </div>
-                            <div class="cost-item">
-                                <div class="cost-name">
-                                    <div class="cost-color" style="background: #f39c12;"></div>
-                                    <span>Repairs</span>
-                                </div>
-                                <div>$18,000</div>
-                            </div>
-                            <div class="cost-item">
-                                <div class="cost-name">
-                                    <div class="cost-color" style="background: #9b59b6;"></div>
-                                    <span>Spare Parts</span>
-                                </div>
-                                <div>$32,400</div>
-                            </div>
-                            <div class="cost-item">
-                                <div class="cost-name">
-                                    <div class="cost-color" style="background: #1abc9c;"></div>
-                                    <span>Energy Loss</span>
-                                </div>
-                                <div>$17,300</div>
-                            </div>
-                            <div class="cost-item" style="border-top: 2px solid var(--dark); padding-top: 15px; font-weight: 600;">
-                                <div class="cost-name">
-                                    <span>Total Cost Impact</span>
-                                </div>
-                                <div>$165,400</div>
-                            </div>
+                            <h3>Supplier Lead Time</h3>
+                            <canvas id="leadTimeChart"></canvas>
                         </div>
                     </div>
-                    
-                    <!-- FMECA Summary -->
-                    <div class="dashboard-item full-width">
-                        <div class="dashboard-header">
-                            <div class="dashboard-title">FMECA Summary - Top Failure Modes</div>
-                            <div class="dashboard-actions">
-                                <button class="btn btn-primary">Export Report</button>
-                            </div>
-                        </div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Component</th>
-                                        <th>Failure Mode</th>
-                                        <th>Criticality</th>
-                                        <th>Severity</th>
-                                        <th>Occurrence</th>
-                                        <th>Detectability</th>
-                                        <th>RPN</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Doctor Blade</td>
-                                        <td>Blade chatter/wear; holder looseness</td>
-                                        <td><span class="tag tag-high">A</span></td>
-                                        <td>9</td>
-                                        <td>5</td>
-                                        <td>5</td>
-                                        <td>225</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Yankee Cylinder</td>
-                                        <td>Bearing defect / lubrication loss</td>
-                                        <td><span class="tag tag-high">A</span></td>
-                                        <td>10</td>
-                                        <td>4</td>
-                                        <td>3</td>
-                                        <td>120</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Felt Conveyor</td>
-                                        <td>Imbalance/misalignment/tear</td>
-                                        <td><span class="tag tag-high">A</span></td>
-                                        <td>8</td>
-                                        <td>5</td>
-                                        <td>5</td>
-                                        <td>200</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Press Section</td>
-                                        <td>Roll bearing defect / nip instability</td>
-                                        <td><span class="tag tag-high">A</span></td>
-                                        <td>9</td>
-                                        <td>4</td>
-                                        <td>4</td>
-                                        <td>144</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wire Table</td>
-                                        <td>Wire tracking/bearing failure</td>
-                                        <td><span class="tag tag-high">A</span></td>
-                                        <td>8</td>
-                                        <td>4</td>
-                                        <td>4</td>
-                                        <td>128</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="footer">
-                    <p>PaperTech Pro Dashboard | Last Updated: <span id="last-updated"></span> | Data Source: PaperMachine_FMECA.xlsx</p>
-                </div>
-            </div>
-            
-            <!-- Technical Dashboard -->
-            <!-- Technical Dashboard -->
-            <div id="technical" class="technical-dashboard">
-                <div class="technical-header">
-                    <div>
-                        <h1 class="technical-title">Advanced Predictive Maintenance Dashboard</h1>
-                        <p class="subtitle">Real-time Sensor Analytics & Failure Prediction</p>
-                    </div>
-                    <div class="technical-header-info">
-                        <div class="header-badge">Live Monitoring</div>
-                        <div class="header-badge">50 Active Sensors</div>
-                        <div class="header-badge">AI Analytics</div>
-                    </div>
-                </div>
+                </section>
 
-                <!-- Row 1: Real-time Sensor Data -->
-                <div class="technical-grid">
-                    <!-- Vibration Spectrum -->
-                    <div class="technical-card full-width">
-                        <div class="card-header">
-                            <h3><i class="fas fa-vibration"></i> Real-time Vibration Analysis</h3>
-                            <div class="machine-tabs">
-                                <button class="machine-tab active" data-machine="yankee">Yankee Dryer</button>
-                                <button class="machine-tab" data-machine="refiners">Refiners</button>
-                                <button class="machine-tab" data-machine="press">Press Rolls</button>
-                            </div>
+                <!-- Forecasting Tab -->
+                <section id="forecasting" class="tab-content">
+                    <h2>Forecasting</h2>
+                    <div class="controls">
+                        <div class="model-selector">
+                            <button class="model-btn active" data-model="moving">Moving Average</button>
+                            <button class="model-btn" data-model="arima">ARIMA</button>
+                            <button class="model-btn" data-model="exponential">Exponential Smoothing</button>
                         </div>
-                        <div class="vibration-analysis">
-                            <div class="vibration-chart">
-                                <div class="chart-header">
-                                    <h4>FFT Spectrum Analysis</h4>
-                                    <div class="threshold-indicators">
-                                        <span class="threshold normal">Normal: < 2.0g</span>
-                                        <span class="threshold caution">Caution: 2.0-3.0g</span>
-                                        <span class="threshold alarm">Alarm: > 3.0g</span>
-                                    </div>
-                                </div>
-                                <div class="chart-container">
-                                    <canvas id="fftChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="vibration-chart">
-                                <div class="chart-header">
-                                    <h4>Time-Domain Vibration</h4>
-                                    <div class="sensor-selector">
-                                        <select id="vibrationSensorSelect">
-                                            <option value="yankee_r">YANKI_R</option>
-                                            <option value="yankee_l">YANKI_L</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="chart-container">
-                                    <canvas id="timeDomainChart"></canvas>
-                                </div>
-                            </div>
+                        <div class="slider-container">
+                            <label for="forecastHorizon">Forecast Horizon (months):</label>
+                            <input type="range" id="forecastHorizon" min="3" max="12" step="3" value="6">
+                            <span id="horizonValue">6</span>
                         </div>
                     </div>
-                </div>
-
-                <!-- Row 2: Temperature & Current Analysis -->
-                <div class="technical-grid">
-                    <!-- Temperature Curves -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-thermometer-half"></i> Temperature Monitoring</h3>
-                            <div class="time-range">
-                                <select id="tempTimeRange">
-                                    <option value="1h">Last 1 Hour</option>
-                                    <option value="4h">Last 4 Hours</option>
-                                    <option value="24h">Last 24 Hours</option>
-                                </select>
-                            </div>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Forecast vs Actual</h3>
+                            <canvas id="forecastChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="temperatureChart"></canvas>
+                            <h3>Model Accuracy</h3>
+                            <canvas id="accuracyChart"></canvas>
                         </div>
-                        <div class="temperature-heatmap">
-                            <div class="heatmap-title">Machine Section Temperature Intensity</div>
-                            <div class="heatmap-grid">
-                                <div class="heatmap-cell low" title="Headbox: 45°C">Headbox</div>
-                                <div class="heatmap-cell medium" title="Wire Section: 58°C">Wire Section</div>
-                                <div class="heatmap-cell high" title="Press Section: 72°C">Press Section</div>
-                                <div class="heatmap-cell critical" title="Dryer Section: 85°C">Dryer Section</div>
-                                <div class="heatmap-cell medium" title="Calender: 62°C">Calender</div>
-                                <div class="heatmap-cell low" title="Reel: 48°C">Reel</div>
+                    </div>
+                </section>
+
+                <!-- Inventory Health Tab -->
+                <section id="inventory" class="tab-content">
+                    <h2>Inventory Health</h2>
+                    <div class="kpi-cards">
+                        <div class="kpi-card gauge">
+                            <h3>Current Stock</h3>
+                            <div class="gauge-value">78%</div>
+                            <div class="gauge-visual">
+                                <div class="gauge-fill" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div class="kpi-card gauge">
+                            <h3>Safety Stock</h3>
+                            <div class="gauge-value">92%</div>
+                            <div class="gauge-visual">
+                                <div class="gauge-fill" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div class="kpi-card gauge">
+                            <h3>Reorder Point</h3>
+                            <div class="gauge-value">65%</div>
+                            <div class="gauge-visual">
+                                <div class="gauge-fill" style="width: 65%"></div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Current Load -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-bolt"></i> Current Load Analysis</h3>
-                            <div class="load-status">
-                                <span class="status-indicator normal">72% Load</span>
-                            </div>
-                        </div>
-                        <div class="gauge-container">
-                            <canvas id="currentGauge"></canvas>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Inventory vs Safety Stock</h3>
+                            <canvas id="inventorySafetyChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="currentTrendChart"></canvas>
-                        </div>
-                        <div class="load-alerts">
-                            <div class="load-alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span>Spike detected: +25% at 14:30</span>
-                            </div>
+                            <h3>Overstock vs Understock</h3>
+                            <canvas id="stockHealthChart"></canvas>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <!-- Row 3: Anomaly Detection & Failure Probability -->
-                <div class="technical-grid">
-                    <!-- Anomaly Detection -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-exclamation-triangle"></i> Anomaly Detection Alerts</h3>
-                            <div class="alert-stats">
-                                <span class="alert-count critical">3</span>
-                                <span class="alert-count warning">5</span>
-                            </div>
+                <!-- Warehouses Tab -->
+                <section id="warehouses" class="tab-content">
+                    <h2>Multi-Warehouse</h2>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Warehouse Stock Heatmap</h3>
+                            <canvas id="warehouseHeatmap"></canvas>
                         </div>
-                        <div class="anomaly-feed">
-                            <div class="anomaly-item critical">
-                                <div class="anomaly-header">
-                                    <span class="anomaly-type">Critical</span>
-                                    <span class="anomaly-time">2 min ago</span>
-                                </div>
-                                <div class="anomaly-content">
-                                    <div class="anomaly-title">High Vibration on Press Roll</div>
-                                    <div class="anomaly-details">3.5g > 2.0g limit</div>
-                                    <button class="btn btn-sm drill-down">Drill Down</button>
-                                </div>
-                            </div>
-                            <div class="anomaly-item warning">
-                                <div class="anomaly-header">
-                                    <span class="anomaly-type">Warning</span>
-                                    <span class="anomaly-time">15 min ago</span>
-                                </div>
-                                <div class="anomaly-content">
-                                    <div class="anomaly-title">Temperature Anomaly - Dryer</div>
-                                    <div class="anomaly-details">85°C > 80°C baseline</div>
-                                    <button class="btn btn-sm drill-down">Drill Down</button>
-                                </div>
-                            </div>
-                            <div class="anomaly-item info">
-                                <div class="anomaly-header">
-                                    <span class="anomaly-type">Info</span>
-                                    <span class="anomaly-time">30 min ago</span>
-                                </div>
-                                <div class="anomaly-content">
-                                    <div class="anomaly-title">Current Fluctuation</div>
-                                    <div class="anomaly-details">±15% variance detected</div>
-                                    <button class="btn btn-sm drill-down">Drill Down</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="anomaly-scatter">
-                            <div class="chart-container">
-                                <canvas id="anomalyScatterChart"></canvas>
-                            </div>
+                        <div class="chart-container">
+                            <h3>Geographic Distribution</h3>
+                            <div id="geoMap"></div>
                         </div>
                     </div>
+                    <div class="chart-row">
+                        <div class="chart-container full-width">
+                            <h3>Inventory Flow</h3>
+                            <canvas id="flowChart"></canvas>
+                        </div>
+                    </div>
+                </section>
 
-                    <!-- Failure Probability Timeline -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-chart-line"></i> Failure Probability Timeline</h3>
-                            <select id="componentSelect">
-                                <option value="dryer_bearing">Dryer Roll Bearing</option>
-                                <option value="press_roll">Press Section Roll</option>
-                                <option value="yankee_cylinder">Yankee Cylinder</option>
+                <!-- Alerts Tab -->
+                <section id="alerts" class="tab-content">
+                    <h2>Alerts & Automation</h2>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Purchase Orders</h3>
+                            <canvas id="poChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Threshold Breaches</h3>
+                            <canvas id="breachChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="alert-table-container">
+                        <h3>Alert Logs</h3>
+                        <div class="table-controls">
+                            <input type="text" id="alertSearch" placeholder="Search alerts...">
+                            <select id="severityFilter">
+                                <option value="all">All Severity</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
                             </select>
                         </div>
-                        <div class="rul-display">
-                            <div class="rul-metric">
-                                <div class="rul-value">142</div>
-                                <div class="rul-label">Days RUL</div>
-                                <div class="health-index">
-                                    <span class="index-value">78</span>
-                                    <span class="index-label">Health Index</span>
-                                </div>
-                            </div>
+                        <table class="alert-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Severity</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alertTableBody">
+                                <!-- Alert rows will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Scenario Planning Tab -->
+                <section id="scenario" class="tab-content">
+                    <h2>Scenario Planning</h2>
+                    <div class="scenario-controls">
+                        <div class="slider-group">
+                            <label for="demandSurge">Demand Surge (%)</label>
+                            <input type="range" id="demandSurge" min="0" max="50" value="10">
+                            <span id="demandValue">10%</span>
+                        </div>
+                        <div class="slider-group">
+                            <label for="supplierDelay">Supplier Delay (days)</label>
+                            <input type="range" id="supplierDelay" min="0" max="30" value="5">
+                            <span id="delayValue">5 days</span>
+                        </div>
+                        <div class="slider-group">
+                            <label for="leadTimeVar">Lead Time Variability</label>
+                            <input type="range" id="leadTimeVar" min="0" max="100" value="20">
+                            <span id="variabilityValue">20%</span>
+                        </div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Baseline vs Scenario</h3>
+                            <canvas id="scenarioChart"></canvas>
                         </div>
                         <div class="chart-container">
-                            <canvas id="failureProbabilityChart"></canvas>
-                        </div>
-                        <div class="timeline-gantt">
-                            <div class="gantt-bar">
-                                <div class="gantt-label">Current</div>
-                                <div class="gantt-track">
-                                    <div class="gantt-progress healthy" style="width: 70%"></div>
-                                    <div class="gantt-marker current" style="left: 70%"></div>
-                                </div>
-                            </div>
-                            <div class="gantt-bar">
-                                <div class="gantt-label">Expected Failure</div>
-                                <div class="gantt-track">
-                                    <div class="gantt-progress warning" style="width: 90%"></div>
-                                    <div class="gantt-date">Dec 15, 2024</div>
-                                </div>
-                            </div>
+                            <h3>Sensitivity Analysis</h3>
+                            <canvas id="sensitivityChart"></canvas>
                         </div>
                     </div>
-                </div>
-
-                <!-- Row 4: FMECA & Maintenance -->
-                <div class="technical-grid">
-                    <!-- FMECA Details -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-cogs"></i> FMECA Component Analysis</h3>
-                            <button class="btn btn-sm btn-primary" id="exportFmeca">Export</button>
-                        </div>
-                        <div class="fmeca-matrix">
-                            <table class="fmeca-table">
-                                <thead>
-                                    <tr>
-                                        <th>Component</th>
-                                        <th>Failure Mode</th>
-                                        <th>Effect</th>
-                                        <th>RPN</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="critical-fmeca">
-                                        <td>Dryer Roll Bearing</td>
-                                        <td>Bearing wear</td>
-                                        <td>Machine shutdown</td>
-                                        <td><span class="rpn-score">225</span></td>
-                                    </tr>
-                                    <tr class="high-fmeca">
-                                        <td>Press Section Roll</td>
-                                        <td>Roll deflection</td>
-                                        <td>Quality issues</td>
-                                        <td><span class="rpn-score">144</span></td>
-                                    </tr>
-                                    <tr class="medium-fmeca">
-                                        <td>Yankee Cylinder</td>
-                                        <td>Surface wear</td>
-                                        <td>Reduced efficiency</td>
-                                        <td><span class="rpn-score">85</span></td>
-                                    </tr>
-                                    <tr class="low-fmeca">
-                                        <td>Wire Table Guide</td>
-                                        <td>Guide wear</td>
-                                        <td>Minor alignment issues</td>
-                                        <td><span class="rpn-score">45</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="fmeca-details-panel" id="fmecaDetails">
-                            <div class="details-header">Component Details</div>
-                            <div class="details-content">
-                                <p>Select a component to view detailed failure analysis</p>
-                            </div>
-                        </div>
+                    <div class="scenario-table">
+                        <h3>Projected Cost Impact</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Baseline</th>
+                                    <th>Scenario</th>
+                                    <th>Change</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Inventory Cost</td>
+                                    <td>$245,000</td>
+                                    <td>$278,000</td>
+                                    <td class="negative">+$33,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Stockout Cost</td>
+                                    <td>$12,500</td>
+                                    <td>$8,200</td>
+                                    <td class="positive">-$4,300</td>
+                                </tr>
+                                <tr>
+                                    <td>Carrying Cost</td>
+                                    <td>$44,100</td>
+                                    <td>$50,040</td>
+                                    <td class="negative">+$5,940</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Cost</td>
+                                    <td>$301,600</td>
+                                    <td>$336,240</td>
+                                    <td class="negative">+$34,640</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                </section>
 
-                    <!-- Maintenance & Recommendations -->
-                    <div class="technical-card">
-                        <div class="card-header">
-                            <h3><i class="fas fa-tools"></i> Maintenance & Recommendations</h3>
-                            <div class="maintenance-badges">
-                                <span class="badge urgent">3 Urgent</span>
-                                <span class="badge scheduled">5 Scheduled</span>
+                <!-- Reports Tab -->
+                <section id="reports" class="tab-content">
+                    <h2>Reports</h2>
+                    <div class="report-controls">
+                        <div class="filter-panel">
+                            <h3>Filters</h3>
+                            <div class="filter-group">
+                                <label for="dateFrom">From:</label>
+                                <input type="date" id="dateFrom">
                             </div>
-                        </div>
-                        <div class="maintenance-tasks">
-                            <div class="task-item urgent">
-                                <div class="task-icon">🔧</div>
-                                <div class="task-content">
-                                    <div class="task-title">Replace Dryer Roll Bearing</div>
-                                    <div class="task-priority">Immediate Action Required</div>
-                                    <div class="task-decision">
-                                        <span class="decision-path">Inspect → Replace → Test</span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="btn btn-sm btn-primary">Schedule</button>
-                                </div>
+                            <div class="filter-group">
+                                <label for="dateTo">To:</label>
+                                <input type="date" id="dateTo">
                             </div>
-                            <div class="task-item warning">
-                                <div class="task-icon">🛠️</div>
-                                <div class="task-content">
-                                    <div class="task-title">Lubrication System Service</div>
-                                    <div class="task-priority">Scheduled for Next Shutdown</div>
-                                    <div class="task-decision">
-                                        <span class="decision-path">Check levels → Refill → Verify</span>
-                                    </div>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="btn btn-sm">Schedule</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="spare-parts">
-                            <div class="parts-header">
-                                <h4>Spare Parts Inventory</h4>
-                                <span class="stock-status">2 Critical items low</span>
-                            </div>
-                            <div class="inventory-charts">
-                                <div class="inventory-chart">
-                                    <canvas id="inventoryChart" height="120"></canvas>
-                                </div>
-                                <div class="stock-alerts">
-                                    <div class="stock-alert critical">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        <span>Bearing Assembly: 2 left (Min: 5)</span>
-                                    </div>
-                                    <div class="stock-alert warning">
-                                        <i class="fas fa-clock"></i>
-                                        <span>Drive Belt: 3 left (Reorder advised)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 5: Trend Analysis -->
-                <div class="technical-grid">
-                    <div class="technical-card full-width">
-                        <div class="card-header">
-                            <h3><i class="fas fa-chart-area"></i> Trend Analysis & Correlation</h3>
-                            <div class="correlation-controls">
-                                <select id="correlationType">
-                                    <option value="vibration-temp">Vibration vs Temperature</option>
-                                    <option value="speed-failure">Machine Speed vs Failure</option>
-                                    <option value="load-vibration">Load vs Vibration</option>
-                                </select>
-                                <select id="timeWindow">
-                                    <option value="7d">Last 7 Days</option>
-                                    <option value="30d">Last 30 Days</option>
-                                    <option value="90d">Last 90 Days</option>
+                            <div class="filter-group">
+                                <label for="productFilter">Product:</label>
+                                <select id="productFilter">
+                                    <option value="all">All Products</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="apparel">Apparel</option>
+                                    <option value="home">Home Goods</option>
                                 </select>
                             </div>
+                            <div class="filter-group">
+                                <label for="warehouseFilter">Warehouse:</label>
+                                <select id="warehouseFilter">
+                                    <option value="all">All Warehouses</option>
+                                    <option value="north">North</option>
+                                    <option value="south">South</option>
+                                    <option value="east">East</option>
+                                    <option value="west">West</option>
+                                </select>
+                            </div>
+                            <button id="applyFilters" class="btn-primary">Apply Filters</button>
                         </div>
-                        <div class="trend-analysis-grid">
-                            <div class="trend-chart">
-                                <div class="chart-container">
-                                    <canvas id="multiTrendChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="correlation-chart">
-                                <div class="chart-container">
-                                    <canvas id="correlationHeatmap"></canvas>
-                                </div>
-                                <div class="threshold-regions">
-                                    <div class="region critical">
-                                        <span class="region-color"></span>
-                                        <span>High Failure Probability</span>
-                                    </div>
-                                    <div class="region warning">
-                                        <span class="region-color"></span>
-                                        <span>Moderate Risk</span>
-                                    </div>
-                                    <div class="region normal">
-                                        <span class="region-color"></span>
-                                        <span>Normal Operation</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="export-panel">
+                            <h3>Export Options</h3>
+                            <button id="exportPDF" class="btn-secondary">Export to PDF</button>
+                            <button id="exportCSV" class="btn-secondary">Export to CSV</button>
+                            <button id="exportImage" class="btn-secondary">Export to Image</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Row 6: Root Cause Explorer -->
-                <div class="technical-grid">
-                    <div class="technical-card full-width">
-                        <div class="card-header">
-                            <h3><i class="fas fa-search"></i> Root Cause Explorer</h3>
-                            <div class="breadcrumb" id="explorerBreadcrumb">
-                                <span class="breadcrumb-item active">Machine Level</span>
-                            </div>
-                        </div>
-                        <div class="root-cause-explorer">
-                            <div class="explorer-tree">
-                                <div class="tree-level machine-level">
-                                    <div class="tree-node active" data-target="yankee">
-                                        <i class="fas fa-industry"></i>
-                                        <span>Yankee Dryer</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                    <div class="tree-node" data-target="refiners">
-                                        <i class="fas fa-cogs"></i>
-                                        <span>Refiners</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                    <div class="tree-node" data-target="press">
-                                        <i class="fas fa-compress"></i>
-                                        <span>Press Section</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                </div>
-                                
-                                <div class="tree-level subsystem-level hidden">
-                                    <div class="tree-node" data-target="yankee_bearing">
-                                        <i class="fas fa-circle"></i>
-                                        <span>Bearing Assembly</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                    <div class="tree-node" data-target="yankee_cylinder">
-                                        <i class="fas fa-circle"></i>
-                                        <span>Cylinder Surface</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                </div>
-                                
-                                <div class="tree-level component-level hidden">
-                                    <div class="tree-node" data-target="vibration_sensor">
-                                        <i class="fas fa-microchip"></i>
-                                        <span>Vibration Sensor</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
-                                    <div class="tree-node" data-target="temp_sensor">
-                                        <i class="fas fa-thermometer-half"></i>
-                                        <span>Temperature Sensor</span>
-                                        <i class="fas fa-chevron-right"></i>
-                                    </div>
+                    <div class="report-previews">
+                        <h3>Report Previews</h3>
+                        <div class="preview-grid">
+                            <div class="preview-card">
+                                <h4>Inventory Summary</h4>
+                                <div class="mini-chart">
+                                    <canvas id="previewChart1"></canvas>
                                 </div>
                             </div>
-                            
-                            <div class="explorer-dashboard">
-                                <div class="dashboard-placeholder">
-                                    <i class="fas fa-chart-line"></i>
-                                    <p>Select a component from the tree to view detailed sensor signals and analysis</p>
+                            <div class="preview-card">
+                                <h4>Demand Forecast</h4>
+                                <div class="mini-chart">
+                                    <canvas id="previewChart2"></canvas>
                                 </div>
-                                <div class="sensor-dashboard hidden">
-                                    <div class="sensor-header">
-                                        <h4 id="sensorTitle">Sensor Analysis</h4>
-                                        <div class="sensor-meta">
-                                            <span class="sensor-id">ID: YANKI_R</span>
-                                            <span class="sensor-status normal">Normal</span>
-                                        </div>
-                                    </div>
-                                    <div class="sensor-charts">
-                                        <div class="chart-container">
-                                            <canvas id="sensorDetailChart"></canvas>
-                                        </div>
-                                    </div>
-                                    <div class="failure-events">
-                                        <h5>Failure Events Overlay</h5>
-                                        <div class="events-list">
-                                            <div class="event-item">
-                                                <span class="event-date">2024-01-15</span>
-                                                <span class="event-type">Bearing Replacement</span>
-                                            </div>
-                                            <div class="event-item">
-                                                <span class="event-date">2024-03-22</span>
-                                                <span class="event-type">Vibration Spike</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="preview-card">
+                                <h4>Stock Health</h4>
+                                <div class="mini-chart">
+                                    <canvas id="previewChart3"></canvas>
+                                </div>
+                            </div>
+                            <div class="preview-card">
+                                <h4>Warehouse Performance</h4>
+                                <div class="mini-chart">
+                                    <canvas id="previewChart4"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
-        </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="oee-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-chart-line"></i> OEE Calculator - Detailed Analysis</h2>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h3 class="modal-section-title">OEE Components</h3>
-                    <div class="modal-grid">
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">94.2%</div>
-                            <div class="modal-metric-label">Availability</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">87.5%</div>
-                            <div class="modal-metric-label">Performance</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">96.8%</div>
-                            <div class="modal-metric-label">Quality</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">79.8%</div>
-                            <div class="modal-metric-label">Overall OEE</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Availability Breakdown</h3>
-                    <table class="modal-table">
-                        <thead>
-                            <tr>
-                                <th>Machine</th>
-                                <th>Planned Runtime</th>
-                                <th>Actual Runtime</th>
-                                <th>Availability</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Assembly Line A</td>
-                                <td>720 hrs</td>
-                                <td>690 hrs</td>
-                                <td>95.8%</td>
-                            </tr>
-                            <tr>
-                                <td>Packaging Unit B</td>
-                                <td>720 hrs</td>
-                                <td>675 hrs</td>
-                                <td>93.7%</td>
-                            </tr>
-                            <tr>
-                                <td>Testing Station C</td>
-                                <td>720 hrs</td>
-                                <td>710 hrs</td>
-                                <td>98.6%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Performance Metrics</h3>
-                    <div class="modal-chart">
-                        <canvas id="oeePerformanceChart"></canvas>
-                    </div>
-                </div>
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Quality Metrics</h3>
-                    <div class="modal-chart">
-                        <canvas id="oeeQualityChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="performance-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-tachometer-alt"></i> Large Performance - Detailed Analysis</h2>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Run Time Analysis</h3>
-                    <div class="modal-grid">
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">92.4%</div>
-                            <div class="modal-metric-label">Overall Run Time</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">96.1%</div>
-                            <div class="modal-metric-label">Peak Performance</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">88.7%</div>
-                            <div class="modal-metric-label">Average Performance</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">2.3%</div>
-                            <div class="modal-metric-label">Downtime</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Machine Health Status</h3>
-                    <div class="modal-chart">
-                        <canvas id="machineHealthChart"></canvas>
-                    </div>
-                </div>
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Performance Trends</h3>
-                    <div class="modal-chart">
-                        <canvas id="performanceTrendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="alert-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-bell"></i> Alert Engine - Incident Reporting</h2>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Alert Levels</h3>
-                    <div class="modal-grid">
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">12</div>
-                            <div class="modal-metric-label">Level 1 - Base</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">5</div>
-                            <div class="modal-metric-label">Level 2 - System</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">2</div>
-                            <div class="modal-metric-label">Level 3 - IP Key</div>
-                        </div>
-                        <div class="modal-metric">
-                            <div class="modal-metric-value">1</div>
-                            <div class="modal-metric-label">Level 4 - Critical</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-section full-width">
-                    <h3 class="modal-section-title">Active Alerts</h3>
-                    <table class="modal-table">
-                        <thead>
-                            <tr>
-                                <th>Alert ID</th>
-                                <th>Level</th>
-                                <th>Description</th>
-                                <th>Time</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>ALT-0042</td>
-                                <td><span class="status status-urgent">Critical</span></td>
-                                <td>Dryer Rail Bearing Temperature Critical</td>
-                                <td>10:42 AM</td>
-                                <td>Active</td>
-                            </tr>
-                            <tr>
-                                <td>ALT-0038</td>
-                                <td><span class="status status-pending">IP Key</span></td>
-                                <td>RFI Module Performance Degradation</td>
-                                <td>09:15 AM</td>
-                                <td>Active</td>
-                            </tr>
-                            <tr>
-                                <td>ALT-0035</td>
-                                <td><span class="status status-pending">IP Key</span></td>
-                                <td>Compressor Valve Vibration Alert</td>
-                                <td>08:30 AM</td>
-                                <td>Active</td>
-                            </tr>
-                            <tr>
-                                <td>ALT-0029</td>
-                                <td><span class="status status-pending">System</span></td>
-                                <td>Lubrication System Pressure Drop</td>
-                                <td>07:55 AM</td>
-                                <td>Active</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sensor Data Modal -->
-    <div id="sensors-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-microchip"></i> Sensor Data Analysis</h2>
-            </div>
-            <div class="modal-body">
-                <div class="modal-section">
-                    <h3 class="modal-section-title">Sensor Selection</h3>
-                    <div class="sensor-grid">
-                        <div class="sensor-item" data-sensor="YANKI_R">
-                            <i class="fas fa-vibration fa-2x"></i>
-                            <div class="sensor-value">YANKI_R</div>
-                            <div class="sensor-label">Vibration Sensor</div>
-                        </div>
-                        <div class="sensor-item" data-sensor="YANKI_L">
-                            <i class="fas fa-thermometer-half fa-2x"></i>
-                            <div class="sensor-value">YANKI_L</div>
-                            <div class="sensor-label">Temperature Sensor</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="modal-section full-width">
-                    <h3 class="modal-section-title">Sensor Data Charts</h3>
-                    <div id="sensor-charts-container">
-                        <div class="chart-container">
-                            <canvas id="accelerationChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="temperatureChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="frequencyChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="displacementChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
